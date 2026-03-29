@@ -284,7 +284,7 @@ Rules:
 
 
 @app.post("/chat")
-async def chat(req: ChatRequest, current_user: dict = Depends(get_current_user)):
+async def chat(req: ChatRequest):
     try:
         model = genai.GenerativeModel("gemini-2.5-flash")
         system = build_system_prompt(req)

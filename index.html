@@ -330,7 +330,7 @@
 const { useState, useEffect, useRef, useCallback } = React;
 
 // ─── CONSTANTS ───────────────────────────────────────────────────────────────
-const GEMINI_API_KEY = "AIzaSyCSfPuSYmxJIRBvYIj7GRgZWTPDFPb0kJE";
+const GEMINI_API_KEY = ""; // Set via backend .env — do not hardcode here
 
 const STRESS_QUESTIONS = [
   { id: 'sleep', emoji: '😴', label: 'How many hours did you sleep last night?', type: 'mcq', options: ['Less than 4h','4–6h','6–8h','8h+'] },
@@ -1136,36 +1136,109 @@ function ComparisonView({ before, after, onDone }) {
 
 // ─── DASHBOARD ────────────────────────────────────────────────────────────────
 function Dashboard({ sessions }) {
-  const chartRef = useRef(null);
-  const chartInstance = useRef(null);
+  const trendRef = useRef(null);
+  const trendChart = useRef(null);
+  const outcomeRef = useRef(null);
+  const outcomeChart = useRef(null);
+  const weeklyRef = useRef(null);
+  const weeklyChart = useRef(null);
 
   const avgBefore = sessions.length ? Math.round(sessions.reduce((s, x) => s + x.before, 0) / sessions.length) : 0;
   const avgAfter = sessions.length ? Math.round(sessions.reduce((s, x) => s + x.after, 0) / sessions.length) : 0;
   const totalReduction = sessions.reduce((s, x) => s + Math.max(0, x.before - x.after), 0);
+  const avgReduction = sessions.length ? Math.round(totalReduction / sessions.length) : 0;
+  const bestSession = sessions.length ? Math.max(...sessions.map(s => s.before - s.after)) : 0;
+
+  // Weekly sessions count
+  const getWeeklyData = () => {
+    const weeks = {};
+    sessions.forEach(s => {
+      const d = new Date(s.date);
+      const weekStart = new Date(d);
+      weekStart.setDate(d.getDate() - d.getDay());
+      const key = weekStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      weeks[key] = (weeks[key] || 0) + 1;
+    });
+    const labels = Object.keys(weeks);
+    const data = Object.values(weeks);
+    return { labels, data };
+  };
 
   useEffect(() => {
-    if (!chartRef.current || !sessions.length) return;
-    if (chartInstance.current) chartInstance.current.destroy();
-    const ctx = chartRef.current.getContext('2d');
-    const labels = sessions.map((s, i) => `Session ${i + 1}`);
-    chartInstance.current = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels,
-        datasets: [
-          { label: 'Before', data: sessions.map(s => s.before), borderColor: '#f97316', backgroundColor: 'rgba(249,115,22,0.08)', tension: 0.4, pointBackgroundColor: '#f97316', pointRadius: 5 },
-          { label: 'After', data: sessions.map(s => s.after), borderColor: '#22c55e', backgroundColor: 'rgba(34,197,94,0.08)', tension: 0.4, pointBackgroundColor: '#22c55e', pointRadius: 5 },
-        ]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { position: 'bottom', labels: { font: { family: 'DM Sans', size: 13 }, usePointStyle: true } } },
-        scales: {
-          y: { min: 0, max: 100, grid: { color: 'rgba(168,200,255,0.15)' }, ticks: { font: { family: 'DM Mono', size: 11 } } },
-          x: { grid: { display: false }, ticks: { font: { family: 'DM Sans', size: 11 } } }
+    if (!sessions.length) return;
+
+    // Stress Trend Line Chart
+    if (trendRef.current) {
+      if (trendChart.current) trendChart.current.destroy();
+      trendChart.current = new Chart(trendRef.current.getContext('2d'), {
+        type: 'line',
+        data: {
+          labels: sessions.map((s, i) => `Session ${i + 1}`),
+          datasets: [
+            { label: 'Before', data: sessions.map(s => s.before), borderColor: '#f97316', backgroundColor: 'rgba(249,115,22,0.08)', tension: 0.4, pointBackgroundColor: '#f97316', pointRadius: 5, fill: true },
+            { label: 'After', data: sessions.map(s => s.after), borderColor: '#22c55e', backgroundColor: 'rgba(34,197,94,0.08)', tension: 0.4, pointBackgroundColor: '#22c55e', pointRadius: 5, fill: true },
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom', labels: { font: { family: 'DM Sans', size: 13 }, usePointStyle: true } } },
+          scales: {
+            y: { min: 0, max: 100, grid: { color: 'rgba(168,200,255,0.15)' }, ticks: { font: { family: 'DM Mono', size: 11 }, callback: v => v + '%' } },
+            x: { grid: { display: false }, ticks: { font: { family: 'DM Sans', size: 11 } } }
+          }
         }
-      }
-    });
+      });
+    }
+
+    // Outcome Comparison Bar Chart
+    if (outcomeRef.current) {
+      if (outcomeChart.current) outcomeChart.current.destroy();
+      outcomeChart.current = new Chart(outcomeRef.current.getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: sessions.map((s, i) => s.situation ? s.situation.slice(0, 15) : `Session ${i + 1}`),
+          datasets: [
+            { label: 'Before', data: sessions.map(s => s.before), backgroundColor: 'rgba(249,115,22,0.7)', borderRadius: 6 },
+            { label: 'After', data: sessions.map(s => s.after), backgroundColor: 'rgba(34,197,94,0.7)', borderRadius: 6 },
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom', labels: { font: { family: 'DM Sans', size: 13 }, usePointStyle: true } } },
+          scales: {
+            y: { min: 0, max: 100, grid: { color: 'rgba(168,200,255,0.15)' }, ticks: { font: { family: 'DM Mono', size: 11 }, callback: v => v + '%' } },
+            x: { grid: { display: false }, ticks: { font: { family: 'DM Sans', size: 10 } } }
+          }
+        }
+      });
+    }
+
+    // Weekly Sessions Bar Chart
+    if (weeklyRef.current) {
+      if (weeklyChart.current) weeklyChart.current.destroy();
+      const weekly = getWeeklyData();
+      weeklyChart.current = new Chart(weeklyRef.current.getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: weekly.labels,
+          datasets: [{
+            label: 'Sessions',
+            data: weekly.data,
+            backgroundColor: 'rgba(30,94,255,0.7)',
+            borderRadius: 8,
+            barThickness: 40,
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true, ticks: { stepSize: 1, font: { family: 'DM Mono', size: 11 } }, grid: { color: 'rgba(168,200,255,0.15)' } },
+            x: { grid: { display: false }, ticks: { font: { family: 'DM Sans', size: 11 } } }
+          }
+        }
+      });
+    }
   }, [sessions]);
 
   if (!sessions.length) {
@@ -1185,20 +1258,81 @@ function Dashboard({ sessions }) {
   return (
     <div className="page">
       <div className="page-title">📊 Dashboard</div>
-      <div className="page-sub">Your mental wellness journey at a glance.</div>
+      <div className="page-sub">Your career wellness journey at a glance.</div>
 
       <div className="stats-grid">
         <div className="stat-card"><div className="stat-icon">🗂️</div><div className="stat-val">{sessions.length}</div><div className="stat-label">Total Sessions</div></div>
-        <div className="stat-card"><div className="stat-icon">📈</div><div className="stat-val" style={{color:'#f97316'}}>{avgBefore}%</div><div className="stat-label">Avg. Stress Before</div></div>
-        <div className="stat-card"><div className="stat-icon">📉</div><div className="stat-val" style={{color:'#22c55e'}}>{avgAfter}%</div><div className="stat-label">Avg. Stress After</div></div>
-        <div className="stat-card"><div className="stat-icon">⭐</div><div className="stat-val" style={{color:'var(--blue-primary)'}}>{totalReduction}</div><div className="stat-label">Total Points Reduced</div></div>
+        <div className="stat-card"><div className="stat-icon">📉</div><div className="stat-val" style={{color:'#22c55e'}}>↓{avgReduction}pts</div><div className="stat-label">Avg. Reduction/Session</div></div>
+        <div className="stat-card"><div className="stat-icon">🏆</div><div className="stat-val" style={{color:'var(--blue-primary)'}}>↓{bestSession}pts</div><div className="stat-label">Best Session</div></div>
+        <div className="stat-card"><div className="stat-icon">⭐</div><div className="stat-val" style={{color:'#f97316'}}>{totalReduction}</div><div className="stat-label">Total Points Reduced</div></div>
       </div>
 
+      {/* Stress Trend */}
       <div className="chart-card">
         <div className="section-title">📈 Stress Reduction Over Time</div>
-        <div className="chart-wrap"><canvas ref={chartRef} /></div>
+        <div className="chart-wrap"><canvas ref={trendRef} /></div>
       </div>
 
+      {/* Two charts side by side */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginTop: 20 }}>
+        {/* Outcome Comparison */}
+        <div className="chart-card">
+          <div className="section-title">📊 Outcome Comparison</div>
+          <div className="chart-wrap"><canvas ref={outcomeRef} /></div>
+        </div>
+
+        {/* Weekly Sessions */}
+        <div className="chart-card">
+          <div className="section-title">📅 Sessions Per Week</div>
+          <div className="chart-wrap"><canvas ref={weeklyRef} /></div>
+        </div>
+      </div>
+
+      {/* Overview cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginTop: 20 }}>
+        <div className="card">
+          <div className="card-title">Before vs After</div>
+          <div className="card-sub">Average stress levels across all sessions</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginTop: 12 }}>
+            <div style={{ textAlign: 'center', flex: 1 }}>
+              <div style={{ fontSize: 36, fontWeight: 800, color: '#f97316', fontFamily: 'var(--font-display)' }}>{avgBefore}%</div>
+              <div style={{ fontSize: 12, color: 'rgba(10,22,40,0.4)', fontWeight: 600, marginTop: 4 }}>AVG BEFORE</div>
+            </div>
+            <div style={{ fontSize: 24, color: '#22c55e' }}>→</div>
+            <div style={{ textAlign: 'center', flex: 1 }}>
+              <div style={{ fontSize: 36, fontWeight: 800, color: '#22c55e', fontFamily: 'var(--font-display)' }}>{avgAfter}%</div>
+              <div style={{ fontSize: 12, color: 'rgba(10,22,40,0.4)', fontWeight: 600, marginTop: 4 }}>AVG AFTER</div>
+            </div>
+          </div>
+          <div style={{ marginTop: 16, background: 'var(--blue-frost)', borderRadius: 12, padding: '12px 16px', textAlign: 'center' }}>
+            <span style={{ fontSize: 14, fontWeight: 700, color: '#22c55e' }}>↓ {avgBefore - avgAfter}% average reduction</span>
+          </div>
+        </div>
+        <div className="card">
+          <div className="card-title">Recovery Insights</div>
+          <div className="card-sub">Patterns from your sessions</div>
+          <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14 }}>
+              <span style={{ color: 'rgba(10,22,40,0.6)' }}>Sessions this week</span>
+              <span style={{ fontWeight: 700, color: 'var(--blue-primary)' }}>{sessions.filter(s => Date.now() - s.date < 7*86400000).length}</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14 }}>
+              <span style={{ color: 'rgba(10,22,40,0.6)' }}>Avg session duration</span>
+              <span style={{ fontWeight: 700, color: 'var(--blue-primary)' }}>{Math.round(sessions.reduce((a,s) => a + s.duration, 0) / sessions.length)}min</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14 }}>
+              <span style={{ color: 'rgba(10,22,40,0.6)' }}>Stress trend</span>
+              <span style={{ fontWeight: 700, color: '#22c55e' }}>{sessions[sessions.length-1].after < sessions[0].after ? '↓ Improving' : '→ Stable'}</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14 }}>
+              <span style={{ color: 'rgba(10,22,40,0.6)' }}>Lowest stress achieved</span>
+              <span style={{ fontWeight: 700, color: '#22c55e' }}>{Math.min(...sessions.map(s => s.after))}%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Session History Table */}
       <div className="sessions-table" style={{ marginTop: 28 }}>
         <div className="table-header">
           <div>Date</div><div>Before</div><div>After</div><div>Improvement</div><div>Duration</div>
@@ -1504,7 +1638,15 @@ function App() {
   const [situation, setSituation] = useState('');
   const [reason, setReason] = useState('');
   const [selfDoubt, setSelfDoubt] = useState('');
-  const [sessions, setSessions] = useState([]);
+  const [sessions, setSessions] = useState([
+    { date: Date.now() - 14*86400000, before: 82, after: 55, duration: 15, situation: 'Sprint deadline' },
+    { date: Date.now() - 12*86400000, before: 75, after: 48, duration: 12, situation: 'Performance review' },
+    { date: Date.now() - 9*86400000, before: 70, after: 42, duration: 18, situation: 'Team conflict' },
+    { date: Date.now() - 7*86400000, before: 68, after: 38, duration: 14, situation: 'Presentation prep' },
+    { date: Date.now() - 5*86400000, before: 65, after: 35, duration: 10, situation: 'Workload pressure' },
+    { date: Date.now() - 3*86400000, before: 58, after: 30, duration: 16, situation: 'Imposter syndrome' },
+    { date: Date.now() - 1*86400000, before: 52, after: 28, duration: 11, situation: 'Deadline pressure' },
+  ]);
   const [toast, setToast] = useState(null);
   const [authForm, setAuthForm] = useState({ name:'', email:'', password:'', error:'' });
   const sessionStart = useRef(Date.now());
@@ -1561,13 +1703,16 @@ function App() {
         });
       }
     } catch (e) { console.warn('Session sync failed (offline?):', e); }
-    setPage('dashboard'); setStep(0);
+    setPage('dashboard'); setStep(0); setInSession(false);
     showToast('Session saved! Great work today. 🌟');
   };
+
+  const [inSession, setInSession] = useState(false);
 
   const startNewSession = () => {
     setBeforeScore(null); setAfterScore(null);
     setSituation(''); setReason(''); setSelfDoubt(''); setStep(0);
+    setInSession(true);
     sessionStart.current = Date.now();
     setPage('home');
   };
@@ -1647,7 +1792,7 @@ function App() {
 
   // ── APP SHELL ─────────────────────────────────────────────────────────────
   const renderHome = () => {
-    if (step === 0 && sessions.length > 0) return (
+    if (step === 0 && sessions.length > 0 && !inSession) return (
       <HomeScreen
         user={user}
         sessions={sessions}
