@@ -241,7 +241,7 @@ railway variables set GEMINI_API_KEY=your_key JWT_SECRET=your_secret
 | Name |
 |------|
 | Adarsha Aryal |
-| Aashutosh Kr. Sah |
+| Aashutosh Kumar Sah |
 | Ravi Kumar Sah |
 | Saksham Khanal |
 | Sweta Aryal |
