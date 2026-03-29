@@ -9,6 +9,10 @@
 
 ---
 
+![ClarityAI Session Complete](screenshot.jpeg)
+
+---
+
 ## The Problem
 
 Modern work demands constant connectivity and high output, leaving little room for mental recovery. Existing wellness apps offer generic meditation libraries — they don't understand your specific career context, deadlines, or workplace dynamics.
@@ -229,6 +233,20 @@ railway variables set GEMINI_API_KEY=your_key JWT_SECRET=your_secret
 | UX/UI | Floating chat widget, step-by-step flow, responsive design, animated visualizations |
 | Business Impact | Addresses underserved market (career stress), multilingual for Nepal, free and accessible |
 | Presentation & Demo | Live deployed URL, complete user flow, measurable before/after results |
+
+---
+
+## Team
+
+| Name |
+|------|
+| Adarsha Aryal |
+| Ashutosh Kr. Sah |
+| Ravi |
+| Saksham Khanal |
+| Sweta Aryal |
+
+*Nepal-US Hackathon 2026*
 
 ---
 
