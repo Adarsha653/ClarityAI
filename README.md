@@ -13,6 +13,18 @@
 
 ---
 
+## How to Use
+
+1. Clone the repo and open `index.html` in a browser
+2. Sign up and take the **6-question stress assessment**
+3. Describe your situation and select stressor tags
+4. Get **personalized recommendations** based on your score
+5. Chat with the AI coach — it knows your context
+6. Take a **post-session assessment** to measure improvement
+7. Visit the **Dashboard** to track your progress over time
+
+---
+
 ## The Problem
 
 Modern work demands constant connectivity and high output, leaving little room for mental recovery. Existing wellness apps offer generic meditation libraries — they don't understand your specific career context, deadlines, or workplace dynamics.
@@ -29,21 +41,37 @@ ClarityAI is a **context-aware AI career coach** that:
 
 ## Features
 
+### Session Flow
+| Step | Feature | Description |
+|------|---------|-------------|
+| 1 | Stress Quiz | 6-question assessment covering sleep, workload, mood, social connection, anxiety, and energy — scored 0-100% |
+| 2 | Your Situation | Describe your scenario, select stressor tags (Deadline Pressure, Imposter Syndrome, Manager Conflict, etc.), and identify self-doubt triggers |
+| 3 | Personalized Recommendations | AI-generated suggestions based on your stress level — breathing exercises, music, humor, relaxation techniques |
+| 4 | Post-Session Assessment | Retake the stress quiz after the session to measure real improvement |
+| 5 | Session Results | Before vs after stress score comparison with visual progress indicator |
+
+### AI Coach (Available Throughout)
 | Feature | Description |
 |---------|-------------|
-| Stress Calculator | 6-question assessment with weighted scoring (0-100%) |
-| Context-Aware AI Coach | Gemini-powered chat that knows your stress level, situation, and triggers |
-| CBT-Based Coaching | Challenges self-doubt thoughts using cognitive reframing techniques |
-| Workplace Stressor Tags | Selectable tags: Deadline Pressure, Imposter Syndrome, Manager Conflict, etc. |
+| Context-Aware Chat | Gemini-powered chatbot that knows your stress score, situation, and specific triggers |
+| CBT Techniques | Challenges self-doubt thoughts using cognitive reframing |
 | Voice Support | Speak to the AI and hear responses via Web Speech API |
-| Multilingual | English and Nepali language support |
-| Personalized Recommendations | Music, humor, and relaxation content based on stress level |
-| Progress Dashboard | Line charts tracking stress reduction across sessions |
-| Before/After Comparison | Visual comparison showing session impact |
-| Smart Home Screen | New users see onboarding; returning users see dashboard with trends |
-| Auth System | JWT-based authentication with bcrypt password hashing |
-| Persistent Storage | JSON-based storage that survives server restarts |
-| Responsive Design | Mobile-first, works on any screen size |
+| Bilingual | English and Nepali language support |
+
+### Dashboard & Analytics
+| Feature | Description |
+|---------|-------------|
+| Session History | View all past sessions with dates and scores |
+| Progress Graph | Line chart tracking stress reduction over time |
+| Before/After Comparison | Visual comparison showing impact of each session |
+| Aggregate Stats | Total sessions, average improvement, overall stress reduction |
+
+### Platform
+| Feature | Description |
+|---------|-------------|
+| User Authentication | JWT-based login with bcrypt password hashing |
+| Persistent Storage | Data survives server restarts |
+| Responsive Design | Works on desktop and mobile |
 
 ---
 
@@ -54,20 +82,6 @@ ClarityAI is a **context-aware AI career coach** that:
 **Secondary:** College students facing academic pressure, exam anxiety, and imposter syndrome in competitive fields.
 
 **Nepal-specific:** Mental health services are limited and stigmatized. ClarityAI provides a private, accessible alternative with Nepali language support.
-
----
-
-## How It Works
-
-```
-1. Measure Your Baseline    →  6-question stress assessment
-2. Describe Your Situation   →  Workplace stressor tags + self-doubt question
-3. Get Recommendations       →  Personalized content based on stress level
-4. Post-Session Check-in     →  Retake assessment to measure improvement
-5. Track Progress            →  Dashboard shows trends over time
-
-   AI Coach available as floating chat widget on every page
-```
 
 ---
 
@@ -97,7 +111,7 @@ ClarityAI/
 
 ---
 
-## Quick Start
+## Setup & Installation
 
 ### Frontend Only (no backend needed)
 
@@ -220,19 +234,6 @@ railway variables set GEMINI_API_KEY=your_key JWT_SECRET=your_secret
 | Measurement | Streaks, minutes | Before/after stress scores with measurable reduction |
 | Availability | Scheduled sessions | Always-on floating chat companion |
 | Language | English only | English + Nepali |
-
----
-
-## Judging Rubric Alignment
-
-| Criteria | How ClarityAI Addresses It |
-|----------|---------------------------|
-| Problem Understanding | Targets specific career stress patterns (imposter syndrome, burnout, deadline pressure) with CBT-backed approach |
-| Innovation | Context-aware AI agent with full user state, workplace stressor tags, self-doubt challenging |
-| Technical Complexity | Full-stack app with JWT auth, Gemini AI integration, persistent storage, real-time context injection |
-| UX/UI | Floating chat widget, step-by-step flow, responsive design, animated visualizations |
-| Business Impact | Addresses underserved market (career stress), multilingual for Nepal, free and accessible |
-| Presentation & Demo | Live deployed URL, complete user flow, measurable before/after results |
 
 ---
 
