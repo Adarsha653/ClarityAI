@@ -1,5 +1,5 @@
 """
-Serenity — AI Mental Wellness Platform
+ClarityAI — AI Mental Wellness Platform
 FastAPI Backend
 """
 
@@ -16,14 +16,14 @@ import google.generativeai as genai
 load_dotenv()
 
 # ── Config ──────────────────────────────────────────────────────────────────
-SECRET_KEY = os.getenv("JWT_SECRET", "serenity-secret-key-change-in-production")
+SECRET_KEY = os.getenv("JWT_SECRET", "clarityai-secret-key-change-in-production")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7  # 7 days
 
 genai.configure(api_key=GEMINI_API_KEY)
 
-app = FastAPI(title="Serenity API", version="1.0.0")
+app = FastAPI(title="ClarityAI API", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -159,7 +159,7 @@ def calculate_stress(answers: StressAnswers) -> int:
 
 @app.get("/")
 def root():
-    return {"message": "Serenity API v1.0 — Mental Wellness Platform", "status": "running"}
+    return {"message": "ClarityAI API v1.0 — Mental Wellness Platform", "status": "running"}
 
 @app.get("/health")
 def health():
@@ -237,9 +237,9 @@ def get_recommendations(score: int) -> List[str]:
 # ── AI Chat Agent ─────────────────────────────────────────────────────────────
 
 def build_system_prompt(req: ChatRequest) -> str:
-    """Build a context-aware system prompt for the Zenith AI agent."""
+    """Build a context-aware system prompt for the ClarityAI agent."""
     if req.language == "ne":
-        prompt = """तपाईं Zenith हुनुहुन्छ, एक AI करियर वेलनेस कोच।
+        prompt = """तपाईं ClarityAI हुनुहुन्छ, एक AI करियर वेलनेस कोच।
 नियमहरू:
 - अधिकतम २-३ छोटो वाक्यहरूमा उत्तर दिनुहोस्
 - न्यानो, प्रेरणादायक र सहानुभूतिपूर्ण हुनुहोस्
@@ -247,7 +247,7 @@ def build_system_prompt(req: ChatRequest) -> str:
 - CBT (संज्ञानात्मक व्यवहार थेरापी) प्रविधिहरू प्रयोग गर्नुहोस्
 - असम्बन्धित विषयहरूमा: "म तपाईंको करियर वेलनेसमा सहयोग गर्न यहाँ छु।" भन्नुहोस्"""
     else:
-        prompt = """You are Zenith, an AI career wellness coach for working professionals.
+        prompt = """You are ClarityAI, an AI career wellness coach for working professionals.
 Rules:
 - Reply in MAXIMUM 2-3 short sentences
 - Be warm, specific, and actionable — never generic

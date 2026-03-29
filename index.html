@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Zenith — AI Career Wellness Platform</title>
+<title>ClarityAI — AI Career Wellness Platform</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -407,7 +407,7 @@ const API_BASE = 'http://localhost:8000';
 // ─── CHAT API (routes through backend) ───────────────────────────────────────
 async function callChatAPI(messages, context = {}) {
   try {
-    const token = localStorage.getItem('zenith_token');
+    const token = localStorage.getItem('clarityai_token');
     const res = await fetch(`${API_BASE}/chat`, {
       method: 'POST',
       headers: {
@@ -467,8 +467,8 @@ function buildAgentPrompt(context) {
   const lang = context.language || 'en';
   const isNepali = lang === 'ne';
   let prompt = isNepali
-    ? `तपाईं Zenith हुनुहुन्छ, एक AI करियर वेलनेस कोच। नियमहरू: अधिकतम २-३ वाक्यमा उत्तर दिनुहोस्। न्यानो र प्रेरणादायक हुनुहोस्। केवल मानसिक स्वास्थ्य र करियर तनावमा केन्द्रित रहनुहोस्।`
-    : `You are Zenith, an AI career wellness coach for working professionals.
+    ? `तपाईं ClarityAI हुनुहुन्छ, एक AI करियर वेलनेस कोच। नियमहरू: अधिकतम २-३ वाक्यमा उत्तर दिनुहोस्। न्यानो र प्रेरणादायक हुनुहोस्। केवल मानसिक स्वास्थ्य र करियर तनावमा केन्द्रित रहनुहोस्।`
+    : `You are ClarityAI, an AI career wellness coach for working professionals.
 Rules:
 - Reply in 2-3 SHORT sentences maximum
 - Be warm, specific, and actionable — not generic
@@ -903,7 +903,7 @@ function FloatingChat({ user, stressScore, situation, reason, selfDoubt, session
     } else if (stressScore != null) {
       greeting = `Hi${name ? ' ' + name : ''}! Your stress is at ${stressScore}% — not bad. ${situation ? `I see you mentioned "${situation.slice(0, 50)}..."` : 'How are things going?'} I'm here if you want to chat. 🌟`;
     } else {
-      greeting = `Hey${name ? ' ' + name : ''}! I'm Zenith, your AI career wellness coach. I'm here whenever you need to talk about work stress, burnout, or anything on your mind. 💙`;
+      greeting = `Hey${name ? ' ' + name : ''}! I'm ClarityAI, your AI career wellness coach. I'm here whenever you need to talk about work stress, burnout, or anything on your mind. 💙`;
     }
 
     setMsgs([{ role: 'bot', text: greeting, time: now() }]);
@@ -985,7 +985,7 @@ function FloatingChat({ user, stressScore, situation, reason, selfDoubt, session
   return (
     <>
       {/* FAB Button */}
-      <button className={`chat-fab ${open ? 'open' : ''}`} onClick={() => { setOpen(o => !o); setHasNewMsg(false); }} title="Chat with Zenith AI">
+      <button className={`chat-fab ${open ? 'open' : ''}`} onClick={() => { setOpen(o => !o); setHasNewMsg(false); }} title="Chat with ClarityAI">
         {open ? '✕' : '💬'}
         {hasNewMsg && !open && <div className="chat-fab-badge" />}
         {!open && <div className="chat-fab-pulse" />}
@@ -997,7 +997,7 @@ function FloatingChat({ user, stressScore, situation, reason, selfDoubt, session
           <div className="chat-header">
             <div className="chat-avatar">⚡</div>
             <div className="chat-header-info">
-              <h3>Zenith AI</h3>
+              <h3>ClarityAI</h3>
               <p className="chat-online"><span className="chat-online-dot" /> Career wellness coach</p>
             </div>
             <div className="chat-lang-switch">
@@ -1038,7 +1038,7 @@ function FloatingChat({ user, stressScore, situation, reason, selfDoubt, session
             <button className={`chat-mic ${recording ? 'recording' : ''}`} onClick={toggleMic} title="Voice input">
               {recording ? '⏹' : '🎤'}
             </button>
-            <input className="chat-input" placeholder={lang === 'ne' ? 'आफ्नो मन को कुरा लेख्नुहोस्...' : 'Talk to Zenith...'} value={input}
+            <input className="chat-input" placeholder={lang === 'ne' ? 'आफ्नो मन को कुरा लेख्नुहोस्...' : 'Talk to ClarityAI...'} value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && !e.shiftKey && send()} />
             <button className="chat-send" onClick={() => send()} disabled={!input.trim() || loading}>➤</button>
@@ -1220,19 +1220,19 @@ function Dashboard({ sessions }) {
 // ─── ABOUT PAGE ───────────────────────────────────────────────────────────────
 function AboutPage() {
   const features = [
-    { icon:'🧠', title:'Context-Aware AI Coach', desc:'Zenith knows your stress score, situation, and triggers — giving you specific, actionable advice, not generic tips.' },
-    { icon:'💬', title:'Multilingual Support', desc:'Talk to Zenith in English or Nepali. Our AI understands your career context and responds with empathy.' },
+    { icon:'🧠', title:'Context-Aware AI Coach', desc:'ClarityAI knows your stress score, situation, and triggers — giving you specific, actionable advice, not generic tips.' },
+    { icon:'💬', title:'Multilingual Support', desc:'Talk to ClarityAI in English or Nepali. Our AI understands your career context and responds with empathy.' },
     { icon:'🪞', title:'CBT-Based Coaching', desc:'Challenge self-doubt and imposter syndrome with science-backed cognitive behavioral therapy techniques.' },
     { icon:'📊', title:'Progress Tracking', desc:'Before/after stress scores per session with visual dashboards showing your recovery journey over time.' },
-    { icon:'🎙️', title:'Voice Support', desc:'Speak your mind with voice input and hear Zenith\'s responses — like talking to a real coach.' },
+    { icon:'🎙️', title:'Voice Support', desc:'Speak your mind with voice input and hear ClarityAI\'s responses — like talking to a real coach.' },
     { icon:'🔒', title:'Private & Secure', desc:'Your career wellness data stays private. No sharing, no tracking, no judgment.' },
   ];
 
   return (
     <div className="page">
       <div className="about-hero">
-        <h1>About Zenith</h1>
-        <p>Zenith is an AI-powered career wellness platform designed to help working professionals manage burnout, navigate stress, and find balance through context-aware AI coaching and CBT-backed techniques.</p>
+        <h1>About ClarityAI</h1>
+        <p>ClarityAI is an AI-powered career wellness platform designed to help working professionals manage burnout, navigate stress, and find balance through context-aware AI coaching and CBT-backed techniques.</p>
       </div>
       <div className="section-title">✨ Features</div>
       <div className="features-grid">
@@ -1334,7 +1334,7 @@ function HomeScreen({ user, sessions, onStartSession, onGoTo }) {
   const quickActions = [
     { icon: '🧘', label: 'Breathing', desc: '5-min calm', color: '#d1fae5', textColor: '#059669' },
     { icon: '🎵', label: 'Music', desc: 'Ocean waves', color: '#ede9fe', textColor: '#7c3aed' },
-    { icon: '💬', label: 'Quick Chat', desc: 'Talk to Zenith', color: '#dbeafe', textColor: '#1d4ed8' },
+    { icon: '💬', label: 'Quick Chat', desc: 'Talk to ClarityAI', color: '#dbeafe', textColor: '#1d4ed8' },
   ];
 
   return (
@@ -1524,7 +1524,7 @@ function App() {
 
     const u = { name: name || email.split('@')[0], email, joinedAt: Date.now() };
     // Store a local token stub so session POSTs can include auth header
-    localStorage.setItem('zenith_token', btoa(JSON.stringify({ sub: email, ts: Date.now() })));
+    localStorage.setItem('clarityai_token', btoa(JSON.stringify({ sub: email, ts: Date.now() })));
     setUser(u); setAuthMode(null); setView('app');
     showToast(`Welcome${mode === 'signup' ? '' : ' back'}, ${u.name}! 👋`);
   };
@@ -1546,7 +1546,7 @@ function App() {
     setSessions(p => [...p, sessionData]);
     // Persist to backend
     try {
-      const token = localStorage.getItem('zenith_token');
+      const token = localStorage.getItem('clarityai_token');
       if (token) {
         await fetch(`${API_BASE}/sessions`, {
           method: 'POST',
@@ -1587,11 +1587,11 @@ function App() {
             ))}
           </div>
           <nav className="landing-nav">
-            <div className="nav-logo">Zen<span>ith</span></div>
+            <div className="nav-logo">Clarity<span>AI</span></div>
             <div className="nav-links">
               <a onClick={() => {}}>Home</a>
-              <a onClick={() => { setView('app'); setPage('about'); setUser({ name:'Guest', email:'guest@serenity.app', joinedAt: Date.now() }); }}>About</a>
-              <a onClick={() => { setView('app'); setPage('about'); setUser({ name:'Guest', email:'guest@serenity.app', joinedAt: Date.now() }); }}>Features</a>
+              <a onClick={() => { setView('app'); setPage('about'); setUser({ name:'Guest', email:'guest@clarityai.app', joinedAt: Date.now() }); }}>About</a>
+              <a onClick={() => { setView('app'); setPage('about'); setUser({ name:'Guest', email:'guest@clarityai.app', joinedAt: Date.now() }); }}>Features</a>
             </div>
             <div className="nav-btns">
               <button className="btn-outline" onClick={() => setAuthMode('login')}>Login</button>
@@ -1601,10 +1601,10 @@ function App() {
           <div className="landing-hero">
             <div className="hero-badge"><div className="hero-badge-dot" /><span>Your AI Career Coach is online</span></div>
             <h1 className="hero-title">Turn Career Pressure Into<span className="accent">Clarity</span></h1>
-            <p className="hero-subtitle">Zenith helps high-performers manage burnout, navigate stress, and find balance through empathetic AI guidance and actionable micro-steps.</p>
+            <p className="hero-subtitle">ClarityAI helps high-performers manage burnout, navigate stress, and find balance through empathetic AI guidance and actionable micro-steps.</p>
             <div className="hero-btns">
               <button className="btn-primary btn-large" onClick={() => setAuthMode('signup')}>Start Your First Session</button>
-              <button className="btn-outline btn-large" onClick={() => { setView('app'); setPage('about'); setUser({ name:'Guest', email:'guest@serenity.app', joinedAt: Date.now() }); }}>Learn More</button>
+              <button className="btn-outline btn-large" onClick={() => { setView('app'); setPage('about'); setUser({ name:'Guest', email:'guest@clarityai.app', joinedAt: Date.now() }); }}>Learn More</button>
             </div>
           </div>
         </div>
@@ -1614,7 +1614,7 @@ function App() {
             <div className="auth-card">
               <button className="auth-close" onClick={() => setAuthMode(null)}>✕</button>
               <div className="auth-title">{authMode === 'login' ? 'Welcome back' : 'Create account'}</div>
-              <div className="auth-sub">{authMode === 'login' ? 'Sign in to your Serenity account' : 'Start your wellness journey today'}</div>
+              <div className="auth-sub">{authMode === 'login' ? 'Sign in to your ClarityAI account' : 'Start your wellness journey today'}</div>
 
               {authMode === 'signup' && (
                 <div className="form-group">
@@ -1679,7 +1679,7 @@ function App() {
   return (
     <div className="app-shell">
       <nav className="app-nav">
-        <div className="app-logo" onClick={() => setPage('home')}>Zen<span>ith</span></div>
+        <div className="app-logo" onClick={() => setPage('home')}>Clarity<span>AI</span></div>
         <div className="app-nav-links">
           {[['home','🏠 Home'],['dashboard','📊 Dashboard'],['about','ℹ️ About']].map(([p,l]) => (
             <button key={p} className={`nav-tab ${page===p?'active':''}`} onClick={() => { setPage(p); }}>{l}</button>

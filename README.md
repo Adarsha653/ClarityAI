@@ -1,343 +1,241 @@
-# 🧘 Serenity — AI Stress Relief & Mental Wellness Platform
+# ClarityAI — AI Career Wellness Platform
 
-> A production-ready, AI-powered mental wellness web application with stress assessment, multilingual AI chatbot, personalized recommendations, and session tracking.
+> An AI-powered career wellness platform that helps working professionals manage burnout, navigate stress, and find balance through context-aware coaching and CBT-backed techniques.
 
-![Serenity Platform](https://img.shields.io/badge/Status-MVP%20Ready-brightgreen)
-![License](https://img.shields.io/badge/License-MIT-blue)
+![Status](https://img.shields.io/badge/Status-MVP%20Ready-brightgreen)
 ![Python](https://img.shields.io/badge/Python-3.10+-yellow)
 ![React](https://img.shields.io/badge/React-18-61DAFB)
+![Gemini](https://img.shields.io/badge/AI-Gemini%202.5%20Flash-blue)
 
 ---
 
-## ✨ Features
+## The Problem
+
+Modern work demands constant connectivity and high output, leaving little room for mental recovery. Existing wellness apps offer generic meditation libraries — they don't understand your specific career context, deadlines, or workplace dynamics.
+
+## Our Solution
+
+ClarityAI is a **context-aware AI career coach** that:
+- Knows your stress score, situation, and specific triggers
+- Uses **CBT (Cognitive Behavioral Therapy)** techniques to challenge self-doubt and imposter syndrome
+- Provides **measurable before/after stress reduction** per session
+- Is always available as a floating chat companion across every page
+
+---
+
+## Features
 
 | Feature | Description |
 |---------|-------------|
-| 🧠 Stress Calculator | 6-question assessment generates a precise stress score (0–100%) |
-| 💬 AI Chatbot | Gemini-powered chat in English & Nepali, 2-3 sentence responses |
-| 🎙️ Voice Support | Speak to the AI and hear responses via Web Speech API |
-| 🎵 Recommendations | Music, humor & relaxation content based on stress level |
-| 📊 Progress Dashboard | Line charts tracking stress reduction across sessions |
-| 🔐 Auth System | JWT-based email authentication with secure password hashing |
-| 📱 Fully Responsive | Mobile-first design that works on any screen size |
+| Stress Calculator | 6-question assessment with weighted scoring (0-100%) |
+| Context-Aware AI Coach | Gemini-powered chat that knows your stress level, situation, and triggers |
+| CBT-Based Coaching | Challenges self-doubt thoughts using cognitive reframing techniques |
+| Workplace Stressor Tags | Selectable tags: Deadline Pressure, Imposter Syndrome, Manager Conflict, etc. |
+| Voice Support | Speak to the AI and hear responses via Web Speech API |
+| Multilingual | English and Nepali language support |
+| Personalized Recommendations | Music, humor, and relaxation content based on stress level |
+| Progress Dashboard | Line charts tracking stress reduction across sessions |
+| Before/After Comparison | Visual comparison showing session impact |
+| Smart Home Screen | New users see onboarding; returning users see dashboard with trends |
+| Auth System | JWT-based authentication with bcrypt password hashing |
+| Persistent Storage | JSON-based storage that survives server restarts |
+| Responsive Design | Mobile-first, works on any screen size |
 
 ---
 
-## 📁 Folder Structure
+## Target Audience
+
+**Primary:** Working professionals aged 22-40 in high-pressure roles (software engineers, product managers, consultants, founders) who experience work-related stress but won't seek formal therapy.
+
+**Secondary:** College students facing academic pressure, exam anxiety, and imposter syndrome in competitive fields.
+
+**Nepal-specific:** Mental health services are limited and stigmatized. ClarityAI provides a private, accessible alternative with Nepali language support.
+
+---
+
+## How It Works
 
 ```
-serenity/
-├── index.html                    # ← Complete frontend (single file, standalone)
-│
-├── backend/
-│   ├── main.py                   # FastAPI app (all routes)
-│   ├── requirements.txt          # Python dependencies
-│   ├── .env.example              # Environment variable template
-│   └── .env                      # Your actual env vars (not committed)
-│
-├── frontend/                     # (Optional: React project scaffold)
-│   ├── src/
-│   │   ├── App.jsx
-│   │   ├── components/
-│   │   │   ├── LandingPage.jsx
-│   │   │   ├── AuthModal.jsx
-│   │   │   ├── StressQuiz.jsx
-│   │   │   ├── Chatbot.jsx
-│   │   │   ├── Recommendations.jsx
-│   │   │   ├── Dashboard.jsx
-│   │   │   └── Profile.jsx
-│   │   ├── hooks/
-│   │   │   ├── useAuth.js
-│   │   │   └── useChat.js
-│   │   └── api/
-│   │       └── client.js
-│   ├── package.json
-│   └── tailwind.config.js
-│
+1. Measure Your Baseline    →  6-question stress assessment
+2. Describe Your Situation   →  Workplace stressor tags + self-doubt question
+3. Get Recommendations       →  Personalized content based on stress level
+4. Post-Session Check-in     →  Retake assessment to measure improvement
+5. Track Progress            →  Dashboard shows trends over time
+
+   AI Coach available as floating chat widget on every page
+```
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Frontend | React 18 (CDN), Chart.js, Web Speech API, Canvas API |
+| Backend | FastAPI, Uvicorn, Pydantic |
+| AI | Google Gemini 2.5 Flash |
+| Auth | PyJWT, bcrypt |
+| Storage | JSON file (MVP) — upgradeable to PostgreSQL/MongoDB |
+
+---
+
+## Project Structure
+
+```
+ClarityAI/
+├── index.html           # Complete frontend (single file, standalone)
+├── main.py              # FastAPI backend (all routes + AI chat)
+├── requirements.txt     # Python dependencies
+├── .env                 # Environment variables (not committed)
+├── db.json              # Persistent storage (auto-created)
 └── README.md
 ```
 
 ---
 
-## 🚀 Quick Start (Standalone Frontend)
+## Quick Start
 
-The simplest way to run — **no build tools needed**:
+### Frontend Only (no backend needed)
 
 ```bash
-# 1. Open index.html directly in your browser
 open index.html
-
-# OR serve it locally
+# or
 npx serve . -p 3000
-# Then visit: http://localhost:3000
 ```
 
-> **To enable the AI chatbot**, add your Gemini API key on line ~130 of `index.html`:
-> ```js
-> const GEMINI_API_KEY = "YOUR_GEMINI_API_KEY";
-> ```
+The AI chat will use the Gemini API directly from the browser as a fallback.
 
----
-
-## 🔧 Backend Setup
-
-### Prerequisites
-- Python 3.10+
-- pip
-
-### Installation
+### Full Stack (frontend + backend)
 
 ```bash
-# 1. Navigate to backend
-cd backend/
+# 1. Create virtual environment
+python3 -m venv venv
+source venv/bin/activate
 
-# 2. Create virtual environment
-python -m venv venv
-source venv/bin/activate        # Mac/Linux
-.\venv\Scripts\activate          # Windows
-
-# 3. Install dependencies
+# 2. Install dependencies
 pip install -r requirements.txt
 
-# 4. Configure environment
-cp .env.example .env
-# Edit .env with your actual values (see API Key Guide below)
+# 3. Configure environment
+echo 'GEMINI_API_KEY=your_gemini_key' > .env
+echo 'JWT_SECRET=your_secret_key' >> .env
 
-# 5. Start the server
-uvicorn main:app --reload --port 8000
+# 4. Start the backend
+python3 -m uvicorn main:app --reload --port 8000
+
+# 5. Open index.html in your browser
+open index.html
 ```
 
-The API will be live at `http://localhost:8000`  
-Interactive docs: `http://localhost:8000/docs`
+### Get a Gemini API Key (Free)
+
+1. Go to [Google AI Studio](https://makersuite.google.com/app/apikey)
+2. Click "Create API Key" → "Create project"
+3. Copy the key (starts with `AIza...`)
 
 ---
 
-## 🔑 API Key Configuration Guide
-
-### Gemini API Key
-
-1. Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
-2. Click **"Create API Key"**
-3. Copy the key
-4. **Frontend**: Paste into `index.html` line ~130: `const GEMINI_API_KEY = "AIza..."`
-5. **Backend**: Add to `.env`: `GEMINI_API_KEY=AIza...`
-
-### JWT Secret Key
-
-Generate a secure random key:
-```bash
-python -c "import secrets; print(secrets.token_hex(32))"
-```
-Add to `.env`: `JWT_SECRET=<generated-key>`
-
----
-
-## 📡 API Endpoints Reference
+## API Endpoints
 
 | Method | Endpoint | Description | Auth |
 |--------|----------|-------------|------|
-| GET | `/` | API health | No |
+| GET | `/` | API health check | No |
 | POST | `/auth/register` | Create account | No |
-| POST | `/auth/login` | Login → JWT token | No |
-| GET | `/auth/me` | Get current user | ✅ |
-| POST | `/stress/calculate` | Calculate stress score | ✅ |
-| POST | `/chat` | AI chatbot message | ✅ |
-| POST | `/sessions` | Save session | ✅ |
-| GET | `/sessions` | Get all sessions | ✅ |
-| GET | `/sessions/stats` | Aggregate stats | ✅ |
+| POST | `/auth/login` | Login, returns JWT | No |
+| GET | `/auth/me` | Get current user | Yes |
+| POST | `/stress/calculate` | Calculate stress score | Yes |
+| POST | `/chat` | AI chat with context | Yes |
+| POST | `/sessions` | Save session | Yes |
+| GET | `/sessions` | Get user sessions | Yes |
+| GET | `/sessions/stats` | Aggregate stats | Yes |
 
-### Example: Chat Request
+### Chat Request (Context-Aware)
+
 ```json
 POST /chat
 Authorization: Bearer <token>
 
 {
-  "messages": [
-    {"role": "user", "content": "I'm feeling very anxious about work"}
-  ],
+  "messages": [{"role": "user", "content": "I'm stressed about my presentation"}],
   "language": "en",
-  "stress_score": 72,
-  "situation": "Big deadline tomorrow"
+  "stress_score": 78,
+  "situation": "[Deadline Pressure, Imposter Syndrome] Big board presentation tomorrow",
+  "reason": "Fear of not meeting expectations",
+  "self_doubt": "What if they realize I don't know enough?",
+  "session_history_summary": "3 sessions, avg reduction 20pts",
+  "current_page": "home",
+  "time_of_day": "evening"
 }
 ```
 
-### Example: Stress Calculation
-```json
-POST /stress/calculate
-Authorization: Bearer <token>
-
-{
-  "sleep": "4–6h",
-  "workload": 8,
-  "mood": "Low",
-  "social": "Unsatisfied",
-  "anxiety": 7,
-  "energy": "Tired"
-}
-```
-Response: `{"score": 68, "level": "High", "emoji": "🔴"}`
+The AI uses all this context to give specific, actionable advice — not generic responses.
 
 ---
 
-## 🗄️ Database Options
+## Privacy and Security
 
-The backend defaults to in-memory storage for the MVP. To use a real database:
-
-### PostgreSQL (Recommended for production)
-
-```bash
-pip install sqlalchemy psycopg2-binary alembic
-```
-
-```python
-# In main.py, replace users_db and sessions_db with SQLAlchemy models
-from sqlalchemy import create_engine
-engine = create_engine(os.getenv("DATABASE_URL"))
-```
-
-### MongoDB
-
-```bash
-pip install motor pymongo
-```
-
-```python
-from motor.motor_asyncio import AsyncIOMotorClient
-client = AsyncIOMotorClient(os.getenv("MONGO_URI"))
-db = client.serenity
-```
-
-### Firebase Firestore
-
-```bash
-pip install firebase-admin
-```
-
-```python
-import firebase_admin
-from firebase_admin import credentials, firestore
-cred = credentials.Certificate(os.getenv("FIREBASE_CREDENTIALS"))
-firebase_admin.initialize_app(cred)
-db = firestore.client()
-```
+- Passwords are hashed with **bcrypt** (never stored in plain text)
+- Authentication uses **JWT tokens** with configurable expiry
+- API keys are stored in environment variables, not in source code
+- User conversations are processed by Google Gemini AI and are not permanently stored
+- All data stays local to the server (JSON file storage)
+- No third-party analytics or tracking
+- Users can request data deletion at any time
 
 ---
 
-## 🌐 Deployment Guide
+## Deployment (Vercel)
 
-### Frontend (Vercel — Recommended)
+### Frontend
 
 ```bash
-# Install Vercel CLI
-npm i -g vercel
-
-# Deploy index.html
 vercel --prod
-
-# Or simply drag-and-drop index.html at vercel.com/new
+# or drag-and-drop index.html at vercel.com/new
 ```
 
-### Backend (Railway)
+### Backend (Render / Railway)
 
 ```bash
-# Install Railway CLI
-npm install -g @railway/cli
+# Render
+# Build: pip install -r requirements.txt
+# Start: uvicorn main:app --host 0.0.0.0 --port $PORT
 
-# Login and deploy
-railway login
-railway init
-railway up
-
-# Set env vars
-railway variables set GEMINI_API_KEY=your_key
-railway variables set JWT_SECRET=your_secret
-```
-
-### Backend (Render)
-
-1. Push backend/ folder to a GitHub repo
-2. Create a new **Web Service** on [render.com](https://render.com)
-3. Set **Build Command**: `pip install -r requirements.txt`
-4. Set **Start Command**: `uvicorn main:app --host 0.0.0.0 --port $PORT`
-5. Add environment variables in the Render dashboard
-
-### Backend (Docker)
-
-```dockerfile
-# Dockerfile
-FROM python:3.11-slim
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-COPY . .
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
-```
-
-```bash
-docker build -t serenity-api .
-docker run -p 8000:8000 --env-file .env serenity-api
+# Railway
+railway login && railway init && railway up
+railway variables set GEMINI_API_KEY=your_key JWT_SECRET=your_secret
 ```
 
 ---
 
-## 🎨 Customization Guide
+## What Makes ClarityAI Different
 
-### Colors (in index.html CSS variables)
-```css
-:root {
-  --blue-primary: #1e5eff;   /* Main accent color */
-  --blue-bright: #3d7eff;    /* Hover state */
-  --blue-deep: #0a1628;      /* Text color */
-  /* Change these to your brand colors */
-}
-```
-
-### Adding Languages
-In the chatbot section, add a new language button and update the speech recognition language code:
-```js
-// Add to lang-btn row: { label: '🇮🇳 HI', code: 'hi' }
-// SpeechRecognition lang: 'hi-IN'
-// System prompt: add Hindi version
-```
-
-### Gemini Model
-Change the model in `backend/main.py`:
-```python
-model = genai.GenerativeModel("gemini-1.5-pro")  # More capable
-# or
-model = genai.GenerativeModel("gemini-1.0-pro")   # Faster
-```
+| | Generic Wellness Apps | ClarityAI |
+|---|---|---|
+| Approach | Pre-recorded meditation library | Context-aware AI that knows your specific situation |
+| Input | Pick a category | Describe what's stressing you + select workplace triggers |
+| Response | Same content for everyone | Personalized AI conversation with CBT techniques |
+| Measurement | Streaks, minutes | Before/after stress scores with measurable reduction |
+| Availability | Scheduled sessions | Always-on floating chat companion |
+| Language | English only | English + Nepali |
 
 ---
 
-## 🏆 Hackathon Checklist
+## Judging Rubric Alignment
 
-- [x] 3D animated brain visualization on landing page
-- [x] Email auth with JWT (Login / Signup)
-- [x] 6-question stress calculator with score (0–100%)
-- [x] Situation + reason input form
-- [x] AI chatbot with Gemini integration
-- [x] English + Nepali language support
-- [x] Voice input (microphone) + voice output (TTS)
-- [x] Off-topic detection
-- [x] Personalized recommendations (music, memes, relaxation)
-- [x] Post-session stress re-assessment
-- [x] Before/After comparison view
-- [x] Dashboard with Chart.js line chart
-- [x] Session history table
-- [x] Profile page
-- [x] Fully responsive (mobile + desktop)
-- [x] Smooth animations & transitions
-- [x] Loading states for AI responses
-- [x] FastAPI backend with clean architecture
-- [x] Deployment instructions
+| Criteria | How ClarityAI Addresses It |
+|----------|---------------------------|
+| Problem Understanding | Targets specific career stress patterns (imposter syndrome, burnout, deadline pressure) with CBT-backed approach |
+| Innovation | Context-aware AI agent with full user state, workplace stressor tags, self-doubt challenging |
+| Technical Complexity | Full-stack app with JWT auth, Gemini AI integration, persistent storage, real-time context injection |
+| UX/UI | Floating chat widget, step-by-step flow, responsive design, animated visualizations |
+| Business Impact | Addresses underserved market (career stress), multilingual for Nepal, free and accessible |
+| Presentation & Demo | Live deployed URL, complete user flow, measurable before/after results |
 
 ---
 
-## 📝 License
+## License
 
 MIT License — free to use, modify, and distribute.
 
 ---
 
-*Built with 💙 for mental wellness. Remember: seeking help is a sign of strength.*
+*Built for working professionals who deserve better than "just breathe." Career stress is real — ClarityAI meets you in the moment.*

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ClarityAI — Pitch Deck</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; background: #0a0a0a; color: #fff; overflow: hidden; }
+
+  .deck { width: 100vw; height: 100vh; position: relative; }
+  .slide { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 80px; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
+  .slide.active { opacity: 1; pointer-events: all; }
+
+  /* Nav */
+  .nav { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 100; display: flex; gap: 8px; background: rgba(255,255,255,0.08); backdrop-filter: blur(12px); padding: 8px 16px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1); }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.2); cursor: pointer; transition: all 0.3s; }
+  .dot.active { background: #3b82f6; width: 28px; border-radius: 5px; }
+  .slide-num { position: fixed; bottom: 32px; right: 40px; font-size: 13px; color: rgba(255,255,255,0.3); z-index: 100; font-weight: 500; }
+  .keys-hint { position: fixed; bottom: 32px; left: 40px; font-size: 12px; color: rgba(255,255,255,0.2); z-index: 100; }
+
+  /* Typography */
+  h1 { font-size: 72px; font-weight: 900; line-height: 1.05; letter-spacing: -3px; margin-bottom: 20px; }
+  h2 { font-size: 52px; font-weight: 800; line-height: 1.1; letter-spacing: -2px; margin-bottom: 16px; }
+  h3 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 8px; }
+  .subtitle { font-size: 22px; color: rgba(255,255,255,0.55); font-weight: 400; line-height: 1.6; max-width: 700px; text-align: center; }
+  .label { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: #3b82f6; margin-bottom: 16px; }
+  .accent { color: #3b82f6; }
+  .green { color: #22c55e; }
+  .orange { color: #f97316; }
+  .red { color: #ef4444; }
+
+  /* Layouts */
+  .left-align { align-items: flex-start; text-align: left; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; width: 100%; max-width: 1100px; align-items: center; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 28px; width: 100%; max-width: 1000px; }
+
+  /* Cards */
+  .card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 32px; }
+  .card-icon { font-size: 36px; margin-bottom: 16px; }
+  .card h3 { font-size: 20px; margin-bottom: 8px; }
+  .card p { font-size: 14px; color: rgba(255,255,255,0.5); line-height: 1.6; }
+
+  /* Stats */
+  .stat { text-align: center; }
+  .stat-num { font-size: 64px; font-weight: 900; letter-spacing: -2px; }
+  .stat-label { font-size: 14px; color: rgba(255,255,255,0.4); margin-top: 6px; font-weight: 500; }
+
+  /* Comparison table */
+  .compare { width: 100%; max-width: 900px; border-collapse: collapse; }
+  .compare th { text-align: left; padding: 14px 20px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.35); border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .compare td { padding: 14px 20px; font-size: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); color: rgba(255,255,255,0.7); }
+  .compare td:first-child { font-weight: 600; color: #fff; }
+  .compare .us { color: #3b82f6; font-weight: 600; }
+  .compare .them { color: rgba(255,255,255,0.35); }
+
+  /* Flow */
+  .flow { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; justify-content: center; margin-top: 20px; }
+  .flow-step { background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.25); border-radius: 12px; padding: 14px 22px; font-size: 14px; font-weight: 600; color: #93c5fd; }
+  .flow-arrow { font-size: 18px; color: rgba(255,255,255,0.2); }
+
+  /* Tech pills */
+  .pills { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+  .pill { padding: 8px 18px; border-radius: 50px; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); }
+
+  /* List */
+  .check-list { list-style: none; padding: 0; }
+  .check-list li { font-size: 18px; padding: 10px 0; color: rgba(255,255,255,0.7); display: flex; align-items: center; gap: 12px; }
+  .check-list li::before { content: ''; width: 8px; height: 8px; background: #3b82f6; border-radius: 50%; flex-shrink: 0; }
+
+  /* Big quote */
+  .quote { font-size: 32px; font-weight: 300; font-style: italic; color: rgba(255,255,255,0.6); max-width: 800px; text-align: center; line-height: 1.6; }
+  .quote-author { font-size: 15px; color: rgba(255,255,255,0.3); margin-top: 20px; font-style: normal; font-weight: 500; }
+
+  /* CTA */
+  .cta-btn { display: inline-block; margin-top: 28px; padding: 16px 40px; background: #3b82f6; color: #fff; border-radius: 50px; font-size: 17px; font-weight: 700; text-decoration: none; box-shadow: 0 8px 30px rgba(59,130,246,0.4); }
+
+  @media (max-width: 768px) {
+    .slide { padding: 40px 24px; }
+    h1 { font-size: 42px; }
+    h2 { font-size: 32px; }
+    .two-col, .three-col { grid-template-columns: 1fr; gap: 24px; }
+    .stat-num { font-size: 42px; }
+    .subtitle { font-size: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+  <!-- SLIDE 1: Title -->
+  <div class="slide active" data-bg="#0a0a0a">
+    <div class="label">Hackathon 2026</div>
+    <h1>Clarity<span class="accent">AI</span></h1>
+    <p class="subtitle">Turn career pressure into clarity. An AI-powered career wellness coach for working professionals.</p>
+  </div>
+
+  <!-- SLIDE 2: Problem -->
+  <div class="slide" data-bg="#0a0a0a">
+    <div class="label">The Problem</div>
+    <h2>76% of workers report<br/>burnout <span class="red">at least once</span></h2>
+    <p class="subtitle">Modern work demands constant connectivity and high output. Existing wellness apps offer generic meditation — they don't understand your deadlines, your manager, or your imposter syndrome.</p>
+  </div>
+
+  <!-- SLIDE 3: Pain Points -->
+  <div class="slide" data-bg="#0a0a0a">
+    <div class="label">Why Existing Solutions Fail</div>
+    <div class="three-col" style="margin-top: 20px;">
+      <div class="card">
+        <div class="card-icon">😴</div>
+        <h3>Generic Content</h3>
+        <p>Same breathing exercise whether you're stressed about a breakup or a board meeting.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🚫</div>
+        <h3>No Context</h3>
+        <p>They don't know your stress level, triggers, or work situation. Every session starts from zero.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📊</div>
+        <h3>No Measurement</h3>
+        <p>Track streaks, not outcomes. You meditated 30 days — but did your stress actually go down?</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: Solution -->
+  <div class="slide" data-bg="#0a0a0a">
+    <div class="label">Our Solution</div>
+    <h2>A career coach that<br/><span class="accent">meets you in the moment</span></h2>
+    <p class="subtitle">ClarityAI is a context-aware AI wellness coach that knows your stress score, workplace triggers, and self-doubt thoughts — and uses CBT techniques to help you recover.</p>
+  </div>
+
+  <!-- SLIDE 5: How It Works -->
+  <div class="slide" data-bg="#0a0a0a">
+    <div class="label">How It Works</div>
+    <h2>5-step recovery flow</h2>
+    <div class="flow">
+      <div class="flow-step">Stress Quiz</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step">Describe Situation</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step">AI Recommendations</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step">Post-Session Check</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step">Track Progress</div>
+    </div>
+    <p class="subtitle" style="margin-top: 28px;">AI Coach is always available as a floating chat — it knows your context across every step.</p>
+  </div>
+
+  <!-- SLIDE 6: Key Features -->
+  <div class="slide" data-bg="#0a0a0a">
+    <div class="label">Key Features</div>
+    <div class="three-col">
+      <div class="card">
+        <div class="card-icon">🧠</div>
+        <h3>Context-Aware AI</h3>
+        <p>Knows your stress score, situation, triggers, and session history. Gives specific advice, not generic tips.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🪞</div>
+        <h3>CBT Coaching</h3>
+        <p>Challenges self-doubt thoughts like "What if they realize I don't know enough?" using cognitive reframing.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📈</div>
+        <h3>Measurable Impact</h3>
+        <p>Before/after stress scores per session. Real data showing your recovery, not just streaks.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🏷️</div>
+        <h3>Workplace Stressors</h3>
+        <p>Select specific triggers: Deadline Pressure, Imposter Syndrome, Manager Conflict, and more.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🎙️</div>
+        <h3>Voice Chat</h3>
+        <p>Speak to the AI and hear responses. Like talking to a real coach, in English or Nepali.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔒</div>
+        <h3>Private & Secure</h3>
+        <p>Bcrypt-hashed passwords, JWT auth. Your conversations are not stored permanently.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 7: Differentiator -->
+  <div class="slide" data-bg="#0a0a0a">
+    <div class="label">How We're Different</div>
+    <table class="compare">
+      <tr><th></th><th class="them">Generic Apps (Headspace, Calm)</th><th class="us">ClarityAI</th></tr>
+      <tr><td>Approach</td><td class="them">Pre-recorded meditation library</td><td class="us">Context-aware AI coaching</td></tr>
+      <tr><td>Input</td><td class="them">Pick a category</td><td class="us">Describe your exact situation + triggers</td></tr>
+      <tr><td>Response</td><td class="them">Same content for everyone</td><td class="us">Personalized CBT-based conversation</td></tr>
+      <tr><td>Measurement</td><td class="them">Streaks and minutes</td><td class="us">Before/after stress scores</td></tr>
+      <tr><td>Availability</td><td class="them">Scheduled sessions</td><td class="us">Always-on floating chat</td></tr>
+      <tr><td>Language</td><td class="them">English</td><td class="us">English + Nepali</td></tr>
+    </table>
+  </div>
+
+  <!-- SLIDE 8: Target Audience -->
+  <div class="slide left-align" data-bg="#0a0a0a">
+    <div class="label">Target Audience</div>
+    <h2>Who is this for?</h2>
+    <ul class="check-list" style="margin-top: 20px;">
+      <li>Software engineers facing deadline pressure and burnout</li>
+      <li>Product managers dealing with unclear expectations</li>
+      <li>Startup founders navigating uncertainty and isolation</li>
+      <li>Students with exam anxiety and imposter syndrome</li>
+      <li>Professionals in Nepal where mental health services are limited</li>
+    </ul>
+    <p style="margin-top: 28px; font-size: 15px; color: rgba(255,255,255,0.4);">People who want quick, private stress relief — not hour-long therapy sessions.</p>
+  </div>
+
+  <!-- SLIDE 9: Tech Stack -->
+  <div class="slide" data-bg="#0a0a0a">
+    <div class="label">Tech Stack</div>
+    <h2>Built with</h2>
+    <div class="two-col" style="margin-top: 24px;">
+      <div>
+        <h3 style="color: rgba(255,255,255,0.4); font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">Frontend</h3>
+        <div class="pills">
+          <span class="pill">React 18</span>
+          <span class="pill">Chart.js</span>
+          <span class="pill">Web Speech API</span>
+          <span class="pill">Canvas API</span>
+        </div>
+        <h3 style="color: rgba(255,255,255,0.4); font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-top: 24px;">Backend</h3>
+        <div class="pills">
+          <span class="pill">FastAPI</span>
+          <span class="pill">Python</span>
+          <span class="pill">Pydantic</span>
+          <span class="pill">Uvicorn</span>
+        </div>
+      </div>
+      <div>
+        <h3 style="color: rgba(255,255,255,0.4); font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">AI</h3>
+        <div class="pills">
+          <span class="pill">Gemini 2.5 Flash</span>
+          <span class="pill">CBT Prompting</span>
+          <span class="pill">Context Injection</span>
+        </div>
+        <h3 style="color: rgba(255,255,255,0.4); font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-top: 24px;">Security</h3>
+        <div class="pills">
+          <span class="pill">JWT Auth</span>
+          <span class="pill">bcrypt</span>
+          <span class="pill">CORS</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 10: Impact -->
+  <div class="slide" data-bg="#0a0a0a">
+    <div class="label">Business Impact</div>
+    <div class="three-col">
+      <div class="stat">
+        <div class="stat-num green">Free</div>
+        <div class="stat-label">No subscription needed</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num accent">3 min</div>
+        <div class="stat-label">Average session time</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num orange">24/7</div>
+        <div class="stat-label">Always available AI coach</div>
+      </div>
+    </div>
+    <p class="subtitle" style="margin-top: 40px;">In Nepal, where mental health services are scarce and stigmatized, ClarityAI provides accessible, private, Nepali-language support for career stress.</p>
+  </div>
+
+  <!-- SLIDE 11: Demo -->
+  <div class="slide" data-bg="#0a0a0a">
+    <div class="label">Live Demo</div>
+    <h1>Let's see it<br/><span class="accent">in action</span></h1>
+    <p class="subtitle">Sign up &rarr; Take the quiz &rarr; Describe your situation &rarr; Chat with AI &rarr; See your results</p>
+  </div>
+
+  <!-- SLIDE 12: Thank You -->
+  <div class="slide" data-bg="#0a0a0a">
+    <h1>Thank you.</h1>
+    <p class="quote" style="font-size: 22px; margin-top: 16px;">"Career stress is real. ClarityAI meets you in the moment."</p>
+    <div style="margin-top: 40px; text-align: center;">
+      <div style="font-size: 15px; color: rgba(255,255,255,0.35);">Built by</div>
+      <div style="font-size: 20px; font-weight: 700; margin-top: 6px;">Team ClarityAI</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="nav" id="nav"></div>
+<div class="slide-num" id="slideNum">1 / 12</div>
+<div class="keys-hint">&larr; &rarr; or click dots</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const nav = document.getElementById('nav');
+  const slideNum = document.getElementById('slideNum');
+  let current = 0;
+
+  // Build dots
+  slides.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'dot' + (i === 0 ? ' active' : '');
+    dot.onclick = () => goTo(i);
+    nav.appendChild(dot);
+  });
+
+  function goTo(n) {
+    slides[current].classList.remove('active');
+    nav.children[current].classList.remove('active');
+    current = (n + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    nav.children[current].classList.add('active');
+    slideNum.textContent = `${current + 1} / ${slides.length}`;
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goTo(current + 1); }
+    if (e.key === 'ArrowLeft') goTo(current - 1);
+    if (e.key === 'f') document.documentElement.requestFullscreen?.();
+    if (e.key === 'Escape') document.exitFullscreen?.();
+  });
+
+  // Touch swipe
+  let touchX = 0;
+  document.addEventListener('touchstart', e => touchX = e.touches[0].clientX);
+  document.addEventListener('touchend', e => {
+    const diff = touchX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) goTo(current + (diff > 0 ? 1 : -1));
+  });
+</script>
+</body>
+</html>
