@@ -1,13 +1,1730 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>clarityai</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Zenith — AI Career Wellness Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  :root {
+    --blue-deep: #0a1628;
+    --blue-dark: #0d2244;
+    --blue-mid: #1a3a6e;
+    --blue-primary: #1e5eff;
+    --blue-bright: #3d7eff;
+    --blue-soft: #5b9aff;
+    --blue-mist: #a8c8ff;
+    --blue-pale: #dceeff;
+    --blue-frost: #eef5ff;
+    --white: #ffffff;
+    --off-white: #f8faff;
+    --shadow-sm: 0 2px 12px rgba(30,94,255,0.08);
+    --shadow-md: 0 8px 32px rgba(30,94,255,0.12);
+    --shadow-lg: 0 20px 60px rgba(30,94,255,0.18);
+    --radius-sm: 12px;
+    --radius-md: 20px;
+    --radius-lg: 32px;
+    --font-display: 'Playfair Display', serif;
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font-body);
+    background: var(--off-white);
+    color: var(--blue-deep);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--blue-frost); }
+  ::-webkit-scrollbar-thumb { background: var(--blue-mist); border-radius: 3px; }
+
+  /* LANDING PAGE */
+  .landing { min-height: 100vh; background: linear-gradient(135deg, var(--blue-deep) 0%, var(--blue-dark) 40%, #0f2d5a 100%); position: relative; overflow: hidden; }
+  .landing-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 20px 48px; background: rgba(10,22,40,0.6); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .nav-logo { font-family: var(--font-display); font-size: 22px; color: var(--white); letter-spacing: -0.5px; }
+  .nav-logo span { color: var(--blue-soft); }
+  .nav-links { display: flex; gap: 36px; }
+  .nav-links a { color: rgba(255,255,255,0.65); text-decoration: none; font-size: 14px; font-weight: 500; letter-spacing: 0.3px; transition: color 0.2s; cursor: pointer; }
+  .nav-links a:hover { color: var(--white); }
+  .nav-btns { display: flex; gap: 12px; }
+  .btn-outline { padding: 9px 24px; border: 1.5px solid rgba(255,255,255,0.25); border-radius: 50px; color: var(--white); background: transparent; font-family: var(--font-body); font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+  .btn-outline:hover { border-color: var(--blue-soft); color: var(--blue-soft); background: rgba(91,154,255,0.08); }
+  .btn-primary { padding: 9px 24px; border: none; border-radius: 50px; color: var(--white); background: var(--blue-primary); font-family: var(--font-body); font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.25s; box-shadow: 0 4px 20px rgba(30,94,255,0.4); }
+  .btn-primary:hover { background: var(--blue-bright); transform: translateY(-1px); box-shadow: 0 8px 28px rgba(30,94,255,0.5); }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-large { padding: 16px 44px; font-size: 16px; border-radius: 50px; }
+
+  /* BRAIN CANVAS */
+  #brain-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .landing-hero { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; text-align: center; padding: 100px 24px 60px; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(91,154,255,0.12); border: 1px solid rgba(91,154,255,0.25); border-radius: 50px; padding: 6px 16px; margin-bottom: 28px; }
+  .hero-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: #4ade80; animation: pulse-dot 2s infinite; }
+  @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(1.3)} }
+  .hero-badge span { font-size: 12px; color: var(--blue-mist); font-weight: 500; letter-spacing: 0.5px; }
+  .hero-title { font-family: var(--font-display); font-size: clamp(42px, 7vw, 86px); color: var(--white); line-height: 1.05; letter-spacing: -2px; margin-bottom: 20px; }
+  .hero-title .accent { color: var(--blue-soft); display: block; }
+  .hero-subtitle { font-size: clamp(15px, 2vw, 18px); color: rgba(168,200,255,0.75); max-width: 520px; line-height: 1.7; margin-bottom: 44px; font-weight: 300; }
+  .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+  .particles { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+  .particle { position: absolute; border-radius: 50%; background: rgba(91,154,255,0.15); animation: float-particle linear infinite; }
+  @keyframes float-particle { 0%{transform:translateY(100vh) scale(0)} 100%{transform:translateY(-10vh) scale(1)} }
+
+  /* AUTH */
+  .auth-overlay { position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center; background: rgba(10,22,40,0.85); backdrop-filter: blur(12px); padding: 20px; animation: fade-in 0.2s; }
+  @keyframes fade-in { from{opacity:0} to{opacity:1} }
+  .auth-card { background: var(--white); border-radius: var(--radius-lg); padding: 48px; width: 100%; max-width: 440px; box-shadow: var(--shadow-lg); position: relative; animation: slide-up 0.3s cubic-bezier(0.34,1.56,0.64,1); }
+  @keyframes slide-up { from{opacity:0;transform:translateY(30px) scale(0.97)} to{opacity:1;transform:translateY(0) scale(1)} }
+  .auth-close { position: absolute; top: 20px; right: 20px; width: 32px; height: 32px; border-radius: 50%; background: var(--blue-frost); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--blue-mid); font-size: 16px; transition: all 0.2s; }
+  .auth-close:hover { background: var(--blue-pale); }
+  .auth-title { font-family: var(--font-display); font-size: 28px; color: var(--blue-deep); margin-bottom: 6px; }
+  .auth-sub { font-size: 14px; color: rgba(10,22,40,0.5); margin-bottom: 32px; }
+  .form-group { margin-bottom: 18px; }
+  .form-label { display: block; font-size: 13px; font-weight: 600; color: var(--blue-mid); margin-bottom: 7px; letter-spacing: 0.3px; }
+  .form-input { width: 100%; padding: 13px 16px; border: 1.5px solid var(--blue-pale); border-radius: var(--radius-sm); font-family: var(--font-body); font-size: 15px; color: var(--blue-deep); background: var(--blue-frost); transition: all 0.2s; outline: none; }
+  .form-input:focus { border-color: var(--blue-primary); background: var(--white); box-shadow: 0 0 0 4px rgba(30,94,255,0.08); }
+  .form-input::placeholder { color: rgba(10,22,40,0.3); }
+  .auth-switch { text-align: center; margin-top: 20px; font-size: 13px; color: rgba(10,22,40,0.5); }
+  .auth-switch a { color: var(--blue-primary); cursor: pointer; font-weight: 600; text-decoration: none; }
+  .form-error { font-size: 12px; color: #ef4444; margin-top: 5px; }
+
+  /* APP SHELL */
+  .app-shell { min-height: 100vh; background: var(--off-white); }
+  .app-nav { position: sticky; top: 0; z-index: 90; background: rgba(255,255,255,0.92); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(168,200,255,0.25); padding: 0 32px; height: 64px; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow-sm); }
+  .app-logo { font-family: var(--font-display); font-size: 20px; color: var(--blue-deep); cursor: pointer; }
+  .app-logo span { color: var(--blue-primary); }
+  .app-nav-links { display: flex; gap: 4px; }
+  .nav-tab { padding: 7px 18px; border-radius: 50px; border: none; background: transparent; font-family: var(--font-body); font-size: 14px; font-weight: 500; color: rgba(10,22,40,0.5); cursor: pointer; transition: all 0.2s; }
+  .nav-tab.active, .nav-tab:hover { background: var(--blue-frost); color: var(--blue-primary); }
+  .nav-tab.active { color: var(--blue-primary); font-weight: 600; }
+  .nav-profile { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, var(--blue-primary), var(--blue-soft)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 14px; cursor: pointer; border: 2px solid white; box-shadow: var(--shadow-sm); transition: transform 0.2s; }
+  .nav-profile:hover { transform: scale(1.08); }
+
+  /* PAGE CONTAINERS */
+  .page { padding: 40px 32px; max-width: 900px; margin: 0 auto; animation: page-enter 0.35s ease; }
+  @keyframes page-enter { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+  .page-title { font-family: var(--font-display); font-size: 32px; color: var(--blue-deep); margin-bottom: 6px; }
+  .page-sub { font-size: 15px; color: rgba(10,22,40,0.5); margin-bottom: 36px; }
+
+  /* CARDS */
+  .card { background: var(--white); border-radius: var(--radius-md); padding: 28px; box-shadow: var(--shadow-sm); border: 1px solid rgba(168,200,255,0.2); }
+  .card-title { font-family: var(--font-display); font-size: 18px; color: var(--blue-deep); margin-bottom: 4px; }
+  .card-sub { font-size: 13px; color: rgba(10,22,40,0.45); margin-bottom: 20px; }
+
+  /* STRESS CALCULATOR */
+  .step-indicator { display: flex; align-items: center; gap: 0; margin-bottom: 40px; }
+  .step-dot { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; transition: all 0.3s; flex-shrink: 0; }
+  .step-dot.done { background: var(--blue-primary); color: white; }
+  .step-dot.active { background: var(--blue-primary); color: white; box-shadow: 0 0 0 4px rgba(30,94,255,0.2); }
+  .step-dot.pending { background: var(--blue-frost); color: var(--blue-mist); border: 2px solid var(--blue-pale); }
+  .step-line { flex: 1; height: 2px; background: var(--blue-pale); margin: 0 6px; transition: background 0.3s; }
+  .step-line.done { background: var(--blue-primary); }
+  .step-label { font-size: 11px; font-weight: 600; text-align: center; margin-top: 6px; color: rgba(10,22,40,0.4); letter-spacing: 0.4px; }
+  .step-label.active { color: var(--blue-primary); }
+
+  .q-card { background: var(--white); border-radius: var(--radius-md); padding: 24px 28px; border: 1.5px solid var(--blue-pale); margin-bottom: 16px; transition: border-color 0.2s; }
+  .q-card:hover { border-color: var(--blue-mist); }
+  .q-label { font-size: 15px; font-weight: 600; color: var(--blue-deep); margin-bottom: 16px; }
+  .q-emoji { margin-right: 8px; }
+  .mcq-options { display: flex; flex-wrap: wrap; gap: 10px; }
+  .mcq-opt { padding: 8px 18px; border-radius: 50px; border: 1.5px solid var(--blue-pale); background: var(--blue-frost); font-family: var(--font-body); font-size: 13px; font-weight: 500; color: var(--blue-mid); cursor: pointer; transition: all 0.2s; }
+  .mcq-opt.selected { background: var(--blue-primary); border-color: var(--blue-primary); color: white; box-shadow: 0 4px 12px rgba(30,94,255,0.25); }
+  .mcq-opt:hover:not(.selected) { border-color: var(--blue-soft); color: var(--blue-primary); background: var(--blue-frost); }
+  .slider-row { display: flex; align-items: center; gap: 14px; }
+  .stress-slider { flex: 1; -webkit-appearance: none; height: 6px; border-radius: 3px; background: linear-gradient(to right, var(--blue-primary) 0%, var(--blue-pale) 0%); outline: none; transition: background 0.1s; }
+  .stress-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%; background: var(--blue-primary); cursor: pointer; box-shadow: 0 2px 8px rgba(30,94,255,0.35); border: 3px solid white; }
+  .slider-val { font-family: var(--font-mono); font-size: 15px; font-weight: 600; color: var(--blue-primary); min-width: 36px; text-align: right; }
+
+  /* SCORE DISPLAY */
+  .score-reveal { text-align: center; padding: 40px 0; }
+  .gauge-wrap { position: relative; width: 200px; height: 120px; margin: 0 auto 24px; overflow: visible; }
+  .gauge-bg { fill: none; stroke: var(--blue-pale); stroke-width: 14; stroke-linecap: round; }
+  .gauge-fill { fill: none; stroke-linecap: round; stroke-width: 14; transition: stroke-dashoffset 1.2s cubic-bezier(0.34,1.56,0.64,1), stroke 0.5s; }
+  .gauge-num { font-family: var(--font-display); font-size: 40px; fill: var(--blue-deep); font-weight: 700; }
+  .gauge-pct { font-family: var(--font-body); font-size: 14px; fill: rgba(10,22,40,0.45); }
+  .score-label { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+  .score-desc { font-size: 14px; color: rgba(10,22,40,0.5); max-width: 300px; margin: 0 auto; line-height: 1.6; }
+  .score-bar-wrap { background: var(--blue-pale); border-radius: 50px; height: 10px; overflow: hidden; margin: 16px 0; }
+  .score-bar { height: 100%; border-radius: 50px; transition: width 1.2s cubic-bezier(0.34,1.56,0.64,1); }
+
+  /* SCENARIO INPUT */
+  .textarea-styled { width: 100%; padding: 14px 16px; border: 1.5px solid var(--blue-pale); border-radius: var(--radius-sm); font-family: var(--font-body); font-size: 15px; color: var(--blue-deep); background: var(--blue-frost); resize: vertical; min-height: 100px; outline: none; transition: all 0.2s; line-height: 1.6; }
+  .textarea-styled:focus { border-color: var(--blue-primary); background: white; box-shadow: 0 0 0 4px rgba(30,94,255,0.08); }
+  .textarea-styled::placeholder { color: rgba(10,22,40,0.3); }
+
+  /* CHATBOT */
+  .chat-container { display: flex; flex-direction: column; height: calc(100vh - 200px); min-height: 500px; }
+  .chat-header { background: linear-gradient(135deg, var(--blue-primary), var(--blue-mid)); border-radius: var(--radius-md) var(--radius-md) 0 0; padding: 20px 24px; display: flex; align-items: center; gap: 14px; }
+  .chat-avatar { width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 22px; }
+  .chat-header-info h3 { font-size: 16px; font-weight: 600; color: white; }
+  .chat-header-info p { font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 2px; }
+  .chat-online { display: inline-flex; align-items: center; gap: 5px; }
+  .chat-online-dot { width: 7px; height: 7px; background: #4ade80; border-radius: 50%; animation: pulse-dot 2s infinite; }
+  .chat-lang-switch { margin-left: auto; display: flex; gap: 6px; }
+  .lang-btn { padding: 5px 12px; border-radius: 50px; border: 1.5px solid rgba(255,255,255,0.3); background: transparent; color: white; font-size: 12px; font-family: var(--font-body); font-weight: 500; cursor: pointer; transition: all 0.2s; }
+  .lang-btn.active { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.6); }
+  .chat-messages { flex: 1; overflow-y: auto; padding: 20px; background: var(--blue-frost); display: flex; flex-direction: column; gap: 14px; }
+  .msg { max-width: 75%; animation: msg-in 0.25s ease; }
+  @keyframes msg-in { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+  .msg.user { align-self: flex-end; }
+  .msg.bot { align-self: flex-start; }
+  .msg-bubble { padding: 12px 16px; border-radius: 18px; font-size: 14px; line-height: 1.6; }
+  .msg.user .msg-bubble { background: var(--blue-primary); color: white; border-bottom-right-radius: 4px; }
+  .msg.bot .msg-bubble { background: white; color: var(--blue-deep); border-bottom-left-radius: 4px; box-shadow: var(--shadow-sm); }
+  .msg-time { font-size: 11px; color: rgba(10,22,40,0.35); margin-top: 4px; text-align: right; }
+  .msg.bot .msg-time { text-align: left; }
+  .typing-indicator { display: flex; gap: 4px; padding: 14px 16px; background: white; border-radius: 18px; border-bottom-left-radius: 4px; box-shadow: var(--shadow-sm); width: fit-content; }
+  .typing-dot { width: 7px; height: 7px; background: var(--blue-mist); border-radius: 50%; animation: typing 1.4s infinite; }
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes typing { 0%,80%,100%{transform:scale(1);opacity:0.5} 40%{transform:scale(1.3);opacity:1} }
+  .chat-input-row { display: flex; gap: 10px; padding: 16px; background: white; border-radius: 0 0 var(--radius-md) var(--radius-md); border-top: 1px solid var(--blue-pale); }
+  .chat-input { flex: 1; padding: 12px 16px; border: 1.5px solid var(--blue-pale); border-radius: 50px; font-family: var(--font-body); font-size: 14px; color: var(--blue-deep); background: var(--blue-frost); outline: none; transition: all 0.2s; }
+  .chat-input:focus { border-color: var(--blue-primary); background: white; }
+  .chat-send { width: 44px; height: 44px; border-radius: 50%; border: none; background: var(--blue-primary); color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; font-size: 16px; box-shadow: 0 4px 12px rgba(30,94,255,0.3); }
+  .chat-send:hover { background: var(--blue-bright); transform: scale(1.05); }
+  .chat-mic { width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--blue-pale); background: var(--blue-frost); color: var(--blue-primary); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; font-size: 16px; }
+  .chat-mic.recording { background: #fee2e2; border-color: #ef4444; color: #ef4444; animation: pulse-rec 1s infinite; }
+  @keyframes pulse-rec { 0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,0.3)} 50%{box-shadow:0 0 0 8px rgba(239,68,68,0)} }
+
+  /* RECOMMENDATIONS */
+  .rec-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; margin-top: 24px; }
+  .rec-card { background: white; border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm); border: 1px solid rgba(168,200,255,0.2); transition: transform 0.25s, box-shadow 0.25s; cursor: pointer; }
+  .rec-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+  .rec-thumb { height: 140px; background: linear-gradient(135deg, var(--blue-pale), var(--blue-mist)); display: flex; align-items: center; justify-content: center; font-size: 52px; position: relative; overflow: hidden; }
+  .rec-thumb::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 60%, rgba(30,94,255,0.1)); }
+  .rec-body { padding: 14px 16px; }
+  .rec-tag { display: inline-block; padding: 3px 10px; border-radius: 50px; font-size: 11px; font-weight: 600; letter-spacing: 0.4px; margin-bottom: 8px; text-transform: uppercase; }
+  .rec-tag.music { background: #ede9fe; color: #7c3aed; }
+  .rec-tag.meme { background: #fef3c7; color: #d97706; }
+  .rec-tag.relax { background: #d1fae5; color: #059669; }
+  .rec-title { font-size: 14px; font-weight: 600; color: var(--blue-deep); margin-bottom: 4px; }
+  .rec-desc { font-size: 12px; color: rgba(10,22,40,0.45); line-height: 1.5; }
+
+  /* COMPARISON */
+  .compare-wrap { display: flex; gap: 20px; flex-wrap: wrap; margin: 28px 0; }
+  .compare-card { flex: 1; min-width: 200px; background: white; border-radius: var(--radius-md); padding: 24px; box-shadow: var(--shadow-sm); text-align: center; border: 1px solid rgba(168,200,255,0.2); }
+  .compare-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: rgba(10,22,40,0.4); margin-bottom: 12px; }
+  .compare-num { font-family: var(--font-display); font-size: 52px; font-weight: 700; }
+  .compare-num.before { color: #f97316; }
+  .compare-num.after { color: #22c55e; }
+  .compare-change { display: inline-flex; align-items: center; gap: 5px; margin-top: 8px; padding: 4px 14px; border-radius: 50px; font-size: 13px; font-weight: 600; }
+  .compare-change.good { background: #d1fae5; color: #059669; }
+  .compare-change.bad { background: #fee2e2; color: #ef4444; }
+
+  /* DASHBOARD */
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 16px; margin-bottom: 28px; }
+  .stat-card { background: white; border-radius: var(--radius-md); padding: 22px; box-shadow: var(--shadow-sm); border: 1px solid rgba(168,200,255,0.2); }
+  .stat-icon { font-size: 24px; margin-bottom: 10px; }
+  .stat-val { font-family: var(--font-display); font-size: 32px; font-weight: 700; color: var(--blue-deep); margin-bottom: 4px; }
+  .stat-label { font-size: 12px; color: rgba(10,22,40,0.45); font-weight: 500; }
+  .sessions-table { background: white; border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm); border: 1px solid rgba(168,200,255,0.15); }
+  .table-header { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; padding: 14px 20px; background: var(--blue-frost); font-size: 12px; font-weight: 700; color: var(--blue-mid); letter-spacing: 0.5px; text-transform: uppercase; border-bottom: 1px solid var(--blue-pale); }
+  .table-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; padding: 14px 20px; font-size: 13px; color: var(--blue-deep); border-bottom: 1px solid rgba(168,200,255,0.12); transition: background 0.15s; }
+  .table-row:hover { background: var(--blue-frost); }
+  .table-row:last-child { border-bottom: none; }
+  .badge-score { display: inline-block; padding: 3px 10px; border-radius: 50px; font-size: 12px; font-weight: 600; }
+  .badge-score.high { background: #fee2e2; color: #dc2626; }
+  .badge-score.mid { background: #fef3c7; color: #d97706; }
+  .badge-score.low { background: #d1fae5; color: #16a34a; }
+  .improve-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; color: #16a34a; }
+
+  /* PROFILE */
+  .profile-hero { background: linear-gradient(135deg, var(--blue-primary), var(--blue-mid)); border-radius: var(--radius-lg); padding: 40px; display: flex; align-items: center; gap: 28px; margin-bottom: 24px; }
+  .profile-avatar { width: 80px; height: 80px; border-radius: 50%; background: rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 32px; color: white; border: 3px solid rgba(255,255,255,0.4); flex-shrink: 0; }
+  .profile-info h2 { font-family: var(--font-display); font-size: 26px; color: white; margin-bottom: 4px; }
+  .profile-info p { font-size: 14px; color: rgba(255,255,255,0.7); }
+  .profile-badge { display: inline-block; margin-top: 10px; padding: 4px 14px; background: rgba(255,255,255,0.2); border-radius: 50px; font-size: 12px; color: white; font-weight: 500; }
+  .detail-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+  .detail-item { background: white; border-radius: var(--radius-sm); padding: 16px 18px; box-shadow: var(--shadow-sm); border: 1px solid rgba(168,200,255,0.15); }
+  .detail-key { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: rgba(10,22,40,0.35); margin-bottom: 6px; }
+  .detail-val { font-size: 15px; font-weight: 600; color: var(--blue-deep); }
+
+  /* CHART AREA */
+  .chart-card { background: white; border-radius: var(--radius-md); padding: 28px; box-shadow: var(--shadow-sm); border: 1px solid rgba(168,200,255,0.2); margin-top: 24px; }
+  .chart-wrap { height: 280px; position: relative; }
+
+  /* LOADING */
+  .spinner { width: 24px; height: 24px; border: 2.5px solid var(--blue-pale); border-top-color: var(--blue-primary); border-radius: 50%; animation: spin 0.7s linear infinite; }
+  @keyframes spin { to{transform:rotate(360deg)} }
+  .loading-overlay { display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 48px; }
+  .loading-text { font-size: 14px; color: rgba(10,22,40,0.4); }
+
+  /* BUTTONS */
+  .btn-blue { padding: 12px 32px; border: none; border-radius: 50px; background: var(--blue-primary); color: white; font-family: var(--font-body); font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.25s; box-shadow: 0 4px 20px rgba(30,94,255,0.3); }
+  .btn-blue:hover { background: var(--blue-bright); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(30,94,255,0.4); }
+  .btn-blue:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+  .btn-ghost { padding: 12px 32px; border: 1.5px solid var(--blue-pale); border-radius: 50px; background: transparent; color: var(--blue-mid); font-family: var(--font-body); font-size: 15px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+  .btn-ghost:hover { border-color: var(--blue-mist); color: var(--blue-primary); background: var(--blue-frost); }
+  .btn-row { display: flex; gap: 12px; justify-content: flex-end; margin-top: 28px; }
+
+  /* TOAST */
+  .toast { position: fixed; bottom: 28px; right: 28px; z-index: 999; background: var(--blue-deep); color: white; padding: 14px 22px; border-radius: var(--radius-sm); font-size: 14px; box-shadow: var(--shadow-lg); animation: toast-in 0.3s ease, toast-out 0.3s ease 2.7s forwards; max-width: 320px; }
+  @keyframes toast-in { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes toast-out { from{opacity:1} to{opacity:0} }
+
+  /* ABOUT PAGE */
+  .about-hero { background: linear-gradient(135deg, var(--blue-primary) 0%, var(--blue-mid) 100%); border-radius: var(--radius-lg); padding: 60px 48px; text-align: center; margin-bottom: 32px; }
+  .about-hero h1 { font-family: var(--font-display); font-size: 42px; color: white; margin-bottom: 14px; }
+  .about-hero p { font-size: 17px; color: rgba(255,255,255,0.8); max-width: 520px; margin: 0 auto; line-height: 1.7; }
+  .features-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
+  .feature-card { background: white; border-radius: var(--radius-md); padding: 28px; box-shadow: var(--shadow-sm); border: 1px solid rgba(168,200,255,0.15); }
+  .feature-icon { font-size: 36px; margin-bottom: 14px; }
+  .feature-card h3 { font-family: var(--font-display); font-size: 17px; color: var(--blue-deep); margin-bottom: 8px; }
+  .feature-card p { font-size: 13px; color: rgba(10,22,40,0.5); line-height: 1.65; }
+
+  /* SECTION TITLE */
+  .section-title { font-family: var(--font-display); font-size: 20px; color: var(--blue-deep); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--blue-pale); }
+
+  /* FLOATING CHAT WIDGET */
+  .chat-fab { position: fixed; bottom: 28px; right: 28px; z-index: 900; width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, var(--blue-primary), var(--blue-bright)); border: none; color: white; font-size: 26px; cursor: pointer; box-shadow: 0 6px 28px rgba(30,94,255,0.45); transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1); display: flex; align-items: center; justify-content: center; }
+  .chat-fab:hover { transform: scale(1.1); box-shadow: 0 8px 36px rgba(30,94,255,0.55); }
+  .chat-fab.open { transform: rotate(90deg) scale(1); }
+  .chat-fab-badge { position: absolute; top: -2px; right: -2px; width: 18px; height: 18px; background: #22c55e; border-radius: 50%; border: 2.5px solid white; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; }
+  .chat-fab-pulse { position: absolute; inset: -4px; border-radius: 50%; background: rgba(30,94,255,0.25); animation: fab-pulse 2s infinite; pointer-events: none; }
+  @keyframes fab-pulse { 0%,100%{transform:scale(1);opacity:0.6} 50%{transform:scale(1.25);opacity:0} }
+
+  .float-chat { position: fixed; bottom: 100px; right: 28px; z-index: 901; width: 400px; height: 560px; background: white; border-radius: var(--radius-md); box-shadow: 0 20px 60px rgba(10,22,40,0.25), 0 0 0 1px rgba(168,200,255,0.2); display: flex; flex-direction: column; animation: float-chat-in 0.3s cubic-bezier(0.34,1.56,0.64,1); overflow: hidden; }
+  @keyframes float-chat-in { from{opacity:0;transform:translateY(20px) scale(0.95)} to{opacity:1;transform:translateY(0) scale(1)} }
+  .float-chat .chat-header { border-radius: 0; padding: 16px 20px; }
+  .float-chat .chat-messages { flex: 1; overflow-y: auto; padding: 16px; background: var(--blue-frost); display: flex; flex-direction: column; gap: 12px; }
+  .float-chat .chat-input-row { padding: 12px; border-top: 1px solid var(--blue-pale); }
+  .float-chat .msg-bubble { font-size: 13px; padding: 10px 14px; }
+  .float-chat .chat-input { font-size: 13px; padding: 10px 14px; }
+
+  .chat-context-bar { display: flex; gap: 6px; padding: 8px 16px; background: rgba(30,94,255,0.04); border-bottom: 1px solid rgba(168,200,255,0.2); flex-wrap: wrap; }
+  .context-chip { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 50px; font-size: 11px; font-weight: 600; background: var(--blue-frost); color: var(--blue-mid); border: 1px solid var(--blue-pale); }
+  .context-chip.stress-high { background: #fee2e2; color: #dc2626; border-color: #fecaca; }
+  .context-chip.stress-mid { background: #fef3c7; color: #d97706; border-color: #fde68a; }
+  .context-chip.stress-low { background: #d1fae5; color: #059669; border-color: #a7f3d0; }
+
+  @media (max-width: 768px) {
+    .landing-nav { padding: 16px 20px; }
+    .nav-links { display: none; }
+    .landing-hero { padding: 80px 20px 40px; }
+    .page { padding: 24px 16px; }
+    .app-nav { padding: 0 16px; }
+    .app-nav-links { display: none; }
+    .profile-hero { flex-direction: column; text-align: center; padding: 28px 24px; }
+    .table-header, .table-row { grid-template-columns: 2fr 1fr 1fr; }
+    .table-header > *:nth-child(4), .table-header > *:nth-child(5), .table-row > *:nth-child(4), .table-row > *:nth-child(5) { display: none; }
+    .compare-wrap { flex-direction: column; }
+    .float-chat { width: calc(100vw - 24px); right: 12px; bottom: 90px; height: 70vh; }
+    .chat-fab { bottom: 20px; right: 16px; }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
+
+// ─── CONSTANTS ───────────────────────────────────────────────────────────────
+const GEMINI_API_KEY = "AIzaSyCSfPuSYmxJIRBvYIj7GRgZWTPDFPb0kJE";
+
+const STRESS_QUESTIONS = [
+  { id: 'sleep', emoji: '😴', label: 'How many hours did you sleep last night?', type: 'mcq', options: ['Less than 4h','4–6h','6–8h','8h+'] },
+  { id: 'workload', emoji: '💼', label: 'How would you rate your current workload?', type: 'slider', min: 0, max: 10 },
+  { id: 'mood', emoji: '😊', label: 'How is your overall mood today?', type: 'mcq', options: ['Very Low','Low','Neutral','Good','Excellent'] },
+  { id: 'social', emoji: '👥', label: 'How satisfied are you with your social interactions?', type: 'mcq', options: ['Very Unsatisfied','Unsatisfied','Neutral','Satisfied','Very Satisfied'] },
+  { id: 'anxiety', emoji: '🧠', label: 'Rate your anxiety level right now (0 = none, 10 = extreme)', type: 'slider', min: 0, max: 10 },
+  { id: 'energy', emoji: '⚡', label: 'How is your energy level today?', type: 'mcq', options: ['Exhausted','Tired','Okay','Energized','Very Energized'] },
+];
+
+const RECS = {
+  music: [
+    { emoji:'🎵', title:'Ocean Waves Meditation', desc:'60-min gentle ocean sounds for deep relaxation', tag:'music' },
+    { emoji:'🎹', title:'Piano for Calm', desc:'Soothing instrumental piano pieces', tag:'music' },
+    { emoji:'🌿', title:'Forest Sounds ASMR', desc:'Natural ambience to ease anxiety', tag:'music' },
+  ],
+  meme: [
+    { emoji:'😂', title:'Work From Home Fails', desc:'Hilarious relatable remote work compilation', tag:'meme' },
+    { emoji:'🐶', title:'Funny Dogs Compilation', desc:'Adorable dog moments to brighten your day', tag:'meme' },
+    { emoji:'🤣', title:'Best Reddit Memes 2024', desc:'Top upvoted humor for instant mood lift', tag:'meme' },
+  ],
+  relax: [
+    { emoji:'🧘', title:'5-Min Breathing Exercise', desc:'Box breathing technique for instant calm', tag:'relax' },
+    { emoji:'🌅', title:'Sunrise Yoga Flow', desc:'Gentle morning movement to reset your mind', tag:'relax' },
+    { emoji:'💧', title:'Rain on Window', desc:'2-hour lo-fi rain ambience for focus', tag:'relax' },
+  ],
+};
+
+// ─── UTILS ───────────────────────────────────────────────────────────────────
+function calcStressScore(answers) {
+  let score = 0;
+  const sleep = answers.sleep;
+  if (sleep === 'Less than 4h') score += 30;
+  else if (sleep === '4–6h') score += 20;
+  else if (sleep === '6–8h') score += 8;
+  else score += 0;
+  score += (answers.workload || 0) * 3;
+  const moods = ['Very Low','Low','Neutral','Good','Excellent'];
+  const moodIdx = moods.indexOf(answers.mood);
+  if (moodIdx >= 0) score += (4 - moodIdx) * 5;
+  const socials = ['Very Unsatisfied','Unsatisfied','Neutral','Satisfied','Very Satisfied'];
+  const socialIdx = socials.indexOf(answers.social);
+  if (socialIdx >= 0) score += (4 - socialIdx) * 4;
+  score += (answers.anxiety || 0) * 2.5;
+  const energies = ['Exhausted','Tired','Okay','Energized','Very Energized'];
+  const energyIdx = energies.indexOf(answers.energy);
+  if (energyIdx >= 0) score += (4 - energyIdx) * 3;
+  return Math.min(100, Math.round(score));
+}
+
+function scoreColor(s) {
+  if (s >= 70) return '#ef4444';
+  if (s >= 40) return '#f97316';
+  return '#22c55e';
+}
+
+function scoreLabel(s) {
+  if (s >= 70) return { label: 'High Stress', desc: 'Your stress levels are elevated. Let\'s work together to bring them down.' };
+  if (s >= 40) return { label: 'Moderate Stress', desc: 'Some stress detected. A few calming activities should help.' };
+  return { label: 'Low Stress', desc: 'You\'re doing great! Minimal stress detected today.' };
+}
+
+function now() {
+  return new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+}
+
+function fmtDate(d) {
+  return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+// ─── API CONFIG ──────────────────────────────────────────────────────────────
+const API_BASE = 'http://localhost:8000';
+
+// ─── CHAT API (routes through backend) ───────────────────────────────────────
+async function callChatAPI(messages, context = {}) {
+  try {
+    const token = localStorage.getItem('zenith_token');
+    const res = await fetch(`${API_BASE}/chat`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+      },
+      body: JSON.stringify({
+        messages: messages.map(m => ({ role: m.role === 'bot' ? 'assistant' : 'user', content: m.text })),
+        language: context.language || 'en',
+        stress_score: context.stressScore || null,
+        situation: context.situation || null,
+        reason: context.reason || null,
+        self_doubt: context.selfDoubt || null,
+        session_history_summary: context.sessionSummary || null,
+        current_page: context.currentPage || null,
+        time_of_day: context.timeOfDay || null,
+      }),
+    });
+    if (!res.ok) throw new Error('API error');
+    const data = await res.json();
+    return data.reply || fallbackReply(context.language);
+  } catch (e) {
+    // Fallback: try Gemini directly if backend is down
+    return callGeminiFallback(messages, context);
+  }
+}
+
+async function callGeminiFallback(messages, context = {}) {
+  const lang = context.language || 'en';
+  try {
+    const systemPrompt = buildAgentPrompt(context);
+    const contents = [];
+    for (const m of messages) {
+      contents.push({
+        role: m.role === 'bot' ? 'model' : 'user',
+        parts: [{ text: m.text }]
+      });
+    }
+    // Prepend system context as first user message
+    if (contents.length > 0) {
+      contents[0].parts[0].text = systemPrompt + '\n\nUser: ' + contents[0].parts[0].text;
+    }
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents }),
+    });
+    const data = await res.json();
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    return text.trim() || fallbackReply(lang);
+  } catch (e) {
+    return fallbackReply(lang);
+  }
+}
+
+function buildAgentPrompt(context) {
+  const lang = context.language || 'en';
+  const isNepali = lang === 'ne';
+  let prompt = isNepali
+    ? `तपाईं Zenith हुनुहुन्छ, एक AI करियर वेलनेस कोच। नियमहरू: अधिकतम २-३ वाक्यमा उत्तर दिनुहोस्। न्यानो र प्रेरणादायक हुनुहोस्। केवल मानसिक स्वास्थ्य र करियर तनावमा केन्द्रित रहनुहोस्।`
+    : `You are Zenith, an AI career wellness coach for working professionals.
+Rules:
+- Reply in 2-3 SHORT sentences maximum
+- Be warm, specific, and actionable — not generic
+- Use CBT techniques when appropriate (reframing, thought challenging, grounding)
+- Focus ONLY on career stress, burnout, imposter syndrome, and workplace wellbeing
+- If user asks about unrelated topics, reply: "I'm here to help with your career wellness. Let's stay focused on that."
+- Never give medical diagnoses or prescriptions
+- Reference the user's specific context proactively — don't ask what's wrong if you already know`;
+
+  // Inject context
+  let ctx = '\n\nUSER CONTEXT:';
+  let hasContext = false;
+  if (context.stressScore != null) { ctx += `\n- Current stress score: ${context.stressScore}% (${context.stressScore >= 70 ? 'HIGH - be more caring and urgent' : context.stressScore >= 40 ? 'MODERATE' : 'LOW - celebrate this'})`; hasContext = true; }
+  if (context.situation) { ctx += `\n- Situation: "${context.situation}"`; hasContext = true; }
+  if (context.reason) { ctx += `\n- Stress trigger: "${context.reason}"`; hasContext = true; }
+  if (context.selfDoubt) { ctx += `\n- Self-doubt thought: "${context.selfDoubt}" (use CBT thought challenging on this)`; hasContext = true; }
+  if (context.sessionSummary) { ctx += `\n- Session history: ${context.sessionSummary}`; hasContext = true; }
+  if (context.currentPage) { ctx += `\n- Currently viewing: ${context.currentPage} page`; hasContext = true; }
+  if (context.timeOfDay) { ctx += `\n- Time of day: ${context.timeOfDay}`; hasContext = true; }
+  if (hasContext) prompt += ctx;
+  return prompt;
+}
+
+function fallbackReply(lang) {
+  const replies = lang === 'ne'
+    ? ["तपाईंको भावनाहरू सुन्न मलाई खुसी लाग्छ। तपाईं एक्लै हुनुहुन्न। 💙", "श्वास लिनुहोस् — यो पनि बित्नेछ। तपाईं बलियो हुनुहुन्छ। 🌟", "तपाईंको बारेमा सोच्नु राम्रो कुरा हो। आफ्नो ख्याल राख्नुस्। 💙"]
+    : ["I hear you, and your feelings are completely valid. You're not alone in this. 💙", "Take a deep breath — this moment will pass. You are stronger than you know. 🌟", "Reaching out is a sign of strength. Let's work through this together. 💙"];
+  return replies[Math.floor(Math.random() * replies.length)];
+}
+
+function getTimeOfDay() {
+  const h = new Date().getHours();
+  if (h < 6) return 'late night';
+  if (h < 12) return 'morning';
+  if (h < 17) return 'afternoon';
+  if (h < 21) return 'evening';
+  return 'night';
+}
+
+function getSessionSummary(sessions) {
+  if (!sessions.length) return null;
+  const avgReduction = Math.round(sessions.reduce((s, x) => s + Math.max(0, x.before - x.after), 0) / sessions.length);
+  return `${sessions.length} session${sessions.length > 1 ? 's' : ''} completed, avg stress reduction ${avgReduction} pts per session`;
+}
+
+// ─── BRAIN CANVAS ─────────────────────────────────────────────────────────────
+function BrainCanvas() {
+  const canvasRef = useRef(null);
+  const animRef = useRef(null);
+  const tRef = useRef(0);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let W, H;
+
+    const resize = () => {
+      W = canvas.width = canvas.offsetWidth;
+      H = canvas.height = canvas.offsetHeight;
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    // Particles
+    const pts = Array.from({ length: 80 }, () => ({
+      x: Math.random(), y: Math.random(),
+      vx: (Math.random() - 0.5) * 0.0005,
+      vy: (Math.random() - 0.5) * 0.0005,
+      r: Math.random() * 2.5 + 0.5,
+      a: Math.random(),
+    }));
+
+    function drawBrain(cx, cy, r, t) {
+      // Simplified brain-like shape using bezier curves
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(Math.sin(t * 0.4) * 0.06);
+      const s = r / 100;
+      ctx.scale(s, s);
+
+      // Glow
+      const grd = ctx.createRadialGradient(0, 0, 0, 0, 0, 130);
+      grd.addColorStop(0, 'rgba(30,94,255,0.18)');
+      grd.addColorStop(0.6, 'rgba(30,94,255,0.08)');
+      grd.addColorStop(1, 'rgba(30,94,255,0)');
+      ctx.fillStyle = grd;
+      ctx.beginPath(); ctx.arc(0, 0, 130, 0, Math.PI * 2); ctx.fill();
+
+      // Left hemisphere
+      ctx.beginPath();
+      ctx.moveTo(-10, -60);
+      ctx.bezierCurveTo(-80, -90, -120, -50, -110, 10);
+      ctx.bezierCurveTo(-120, 60, -70, 80, -10, 60);
+      ctx.bezierCurveTo(-40, 30, -40, -20, -10, -60);
+      ctx.strokeStyle = 'rgba(91,154,255,0.7)';
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      // Right hemisphere
+      ctx.beginPath();
+      ctx.moveTo(10, -60);
+      ctx.bezierCurveTo(80, -90, 120, -50, 110, 10);
+      ctx.bezierCurveTo(120, 60, 70, 80, 10, 60);
+      ctx.bezierCurveTo(40, 30, 40, -20, 10, -60);
+      ctx.stroke();
+
+      // Folds - left
+      for (let i = 0; i < 5; i++) {
+        const y = -40 + i * 22;
+        const amp = 18 + Math.sin(t * 0.8 + i) * 3;
+        ctx.beginPath();
+        ctx.moveTo(-100 + i * 4, y);
+        ctx.quadraticCurveTo(-60 + amp, y + 10, -20, y + (i % 2 === 0 ? 8 : -4));
+        ctx.strokeStyle = `rgba(91,154,255,${0.25 + i * 0.06})`;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+      // Folds - right
+      for (let i = 0; i < 5; i++) {
+        const y = -40 + i * 22;
+        const amp = 18 + Math.cos(t * 0.8 + i) * 3;
+        ctx.beginPath();
+        ctx.moveTo(100 - i * 4, y);
+        ctx.quadraticCurveTo(60 - amp, y + 10, 20, y + (i % 2 === 0 ? 8 : -4));
+        ctx.strokeStyle = `rgba(91,154,255,${0.25 + i * 0.06})`;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+
+      // Center divide
+      ctx.beginPath();
+      ctx.moveTo(0, -65); ctx.lineTo(0, 65);
+      ctx.strokeStyle = 'rgba(168,200,255,0.4)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([4, 4]); ctx.stroke(); ctx.setLineDash([]);
+
+      // Neural pulses
+      for (let i = 0; i < 6; i++) {
+        const px = Math.sin(t * 1.2 + i * 1.05) * 60;
+        const py = Math.cos(t * 0.9 + i * 0.7) * 40;
+        const pr = 2.5 + Math.sin(t * 2 + i) * 1;
+        ctx.beginPath(); ctx.arc(px + (i > 2 ? 20 : -20), py, pr, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(91,154,255,${0.5 + Math.sin(t * 2 + i) * 0.3})`;
+        ctx.fill();
+      }
+
+      ctx.restore();
+    }
+
+    function draw() {
+      tRef.current += 0.012;
+      const t = tRef.current;
+      ctx.clearRect(0, 0, W, H);
+
+      // BG particles
+      pts.forEach(p => {
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0) p.x = 1; if (p.x > 1) p.x = 0;
+        if (p.y < 0) p.y = 1; if (p.y > 1) p.y = 0;
+        const alpha = (Math.sin(t + p.a * 10) + 1) / 2 * 0.5;
+        ctx.beginPath(); ctx.arc(p.x * W, p.y * H, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(91,154,255,${alpha * 0.6})`;
+        ctx.fill();
+      });
+
+      // Connect nearby particles
+      for (let i = 0; i < pts.length; i++) {
+        for (let j = i + 1; j < pts.length; j++) {
+          const dx = (pts[i].x - pts[j].x) * W;
+          const dy = (pts[i].y - pts[j].y) * H;
+          const d = Math.sqrt(dx * dx + dy * dy);
+          if (d < 100) {
+            ctx.beginPath();
+            ctx.moveTo(pts[i].x * W, pts[i].y * H);
+            ctx.lineTo(pts[j].x * W, pts[j].y * H);
+            ctx.strokeStyle = `rgba(91,154,255,${(1 - d / 100) * 0.08})`;
+            ctx.lineWidth = 0.8;
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Brain
+      const floatY = Math.sin(t * 0.7) * 10;
+      drawBrain(W / 2, H / 2 + floatY, Math.min(W, H) * 0.38, t);
+
+      animRef.current = requestAnimationFrame(draw);
+    }
+    draw();
+
+    return () => {
+      cancelAnimationFrame(animRef.current);
+      window.removeEventListener('resize', resize);
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} id="brain-canvas" style={{ width:'100%', height:'100%' }} />;
+}
+
+// ─── GAUGE ────────────────────────────────────────────────────────────────────
+function Gauge({ score }) {
+  const r = 70, cx = 100, cy = 90;
+  const circ = Math.PI * r;
+  const filled = (score / 100) * circ;
+  const color = scoreColor(score);
+
+  return (
+    <div className="gauge-wrap" style={{ width: 200, height: 130 }}>
+      <svg viewBox="0 0 200 130" style={{ width: '100%', height: '100%' }}>
+        <path d={`M ${cx - r} ${cy} A ${r} ${r} 0 0 1 ${cx + r} ${cy}`} className="gauge-bg" />
+        <path
+          d={`M ${cx - r} ${cy} A ${r} ${r} 0 0 1 ${cx + r} ${cy}`}
+          fill="none" stroke={color} strokeWidth="14" strokeLinecap="round"
+          strokeDasharray={`${filled} ${circ}`}
+          style={{ transition: 'stroke-dasharray 1.2s cubic-bezier(0.34,1.56,0.64,1)' }}
+        />
+        <text x={cx} y={cy - 8} textAnchor="middle" className="gauge-num" style={{ fill: color }}>{score}</text>
+        <text x={cx} y={cy + 14} textAnchor="middle" className="gauge-pct">out of 100</text>
+      </svg>
+    </div>
+  );
+}
+
+// ─── STEP INDICATOR ──────────────────────────────────────────────────────────
+function StepIndicator({ current }) {
+  const steps = ['Stress Quiz','Your Situation','Recommendations','Results'];
+  return (
+    <div style={{ marginBottom: 36 }}>
+      <div className="step-indicator">
+        {steps.map((s, i) => (
+          <React.Fragment key={i}>
+            <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap: 6 }}>
+              <div className={`step-dot ${i < current ? 'done' : i === current ? 'active' : 'pending'}`}>
+                {i < current ? '✓' : i + 1}
+              </div>
+            </div>
+            {i < steps.length - 1 && <div className={`step-line ${i < current ? 'done' : ''}`} />}
+          </React.Fragment>
+        ))}
+      </div>
+      <div style={{ display:'flex', justifyContent:'space-between', marginTop: 6 }}>
+        {steps.map((s, i) => (
+          <div key={i} style={{ fontSize:10, fontWeight:600, color: i === current ? 'var(--blue-primary)' : 'rgba(10,22,40,0.35)', textAlign:'center', letterSpacing:'0.3px', width: `${100/steps.length}%` }}>{s}</div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── STRESS QUIZ ──────────────────────────────────────────────────────────────
+function StressQuiz({ onComplete, isPost = false }) {
+  const [answers, setAnswers] = useState({ workload: 5, anxiety: 5 });
+  const [sliders, setSliders] = useState({ workload: 5, anxiety: 5 });
+
+  const set = (id, val) => setAnswers(p => ({ ...p, [id]: val }));
+  const setSlider = (id, val) => {
+    setSliders(p => ({ ...p, [id]: val }));
+    set(id, val);
+    // Update slider gradient
+    const el = document.getElementById(`slider-${id}`);
+    if (el) el.style.background = `linear-gradient(to right, var(--blue-primary) ${val * 10}%, var(--blue-pale) ${val * 10}%)`;
+  };
+
+  const canSubmit = STRESS_QUESTIONS.every(q =>
+    q.type === 'mcq' ? answers[q.id] : sliders[q.id] !== undefined
+  );
+
+  const submit = () => {
+    const a = { ...answers, workload: sliders.workload, anxiety: sliders.anxiety };
+    onComplete(calcStressScore(a), a);
+  };
+
+  return (
+    <div>
+      <div className="page-title">{isPost ? '📊 Post-Session Check-In' : '🧠 Stress Assessment'}</div>
+      <div className="page-sub">{isPost ? 'Let\'s see how you\'re feeling after your session.' : 'Answer a few questions to calculate your current stress level.'}</div>
+
+      {STRESS_QUESTIONS.map(q => (
+        <div key={q.id} className="q-card">
+          <div className="q-label"><span className="q-emoji">{q.emoji}</span>{q.label}</div>
+          {q.type === 'mcq' ? (
+            <div className="mcq-options">
+              {q.options.map(opt => (
+                <button key={opt} className={`mcq-opt ${answers[q.id] === opt ? 'selected' : ''}`} onClick={() => set(q.id, opt)}>{opt}</button>
+              ))}
+            </div>
+          ) : (
+            <div className="slider-row">
+              <input id={`slider-${q.id}`} type="range" min={q.min} max={q.max} value={sliders[q.id]} className="stress-slider"
+                onChange={e => setSlider(q.id, Number(e.target.value))}
+                style={{ background: `linear-gradient(to right, var(--blue-primary) ${sliders[q.id] * 10}%, var(--blue-pale) ${sliders[q.id] * 10}%)` }}
+              />
+              <div className="slider-val">{sliders[q.id]}</div>
+            </div>
+          )}
+        </div>
+      ))}
+
+      <div className="btn-row">
+        <button className="btn-blue" onClick={submit} disabled={!canSubmit}>
+          Calculate Stress Score →
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── SCORE SCREEN ─────────────────────────────────────────────────────────────
+function ScoreScreen({ score, onNext, label = 'Continue to Describe Your Situation' }) {
+  const { label: sl, desc } = scoreLabel(score);
+  const color = scoreColor(score);
+  return (
+    <div>
+      <div className="score-reveal">
+        <Gauge score={score} />
+        <div className="score-label" style={{ color }}>{sl}</div>
+        <div className="score-desc">{desc}</div>
+        <div style={{ maxWidth: 320, margin: '20px auto 0' }}>
+          <div className="score-bar-wrap">
+            <div className="score-bar" style={{ width: `${score}%`, background: `linear-gradient(to right, #22c55e, ${color})` }} />
+          </div>
+        </div>
+      </div>
+      <div className="btn-row" style={{ justifyContent:'center' }}>
+        <button className="btn-blue" onClick={onNext}>{label} →</button>
+      </div>
+    </div>
+  );
+}
+
+// ─── SCENARIO INPUT ───────────────────────────────────────────────────────────
+function ScenarioInput({ onNext }) {
+  const [situation, setSituation] = useState('');
+  const [reason, setReason] = useState('');
+  const [selfDoubt, setSelfDoubt] = useState('');
+  const [selectedTags, setSelectedTags] = useState([]);
+
+  const stressorTags = ['Deadline Pressure', 'Imposter Syndrome', 'Manager Conflict', 'Unclear Expectations', 'Work-Life Balance', 'Team Issues', 'Performance Review', 'Public Speaking', 'Workload Overload', 'Career Uncertainty'];
+
+  const toggleTag = (tag) => setSelectedTags(p => p.includes(tag) ? p.filter(t => t !== tag) : [...p, tag]);
+
+  return (
+    <div>
+      <div className="page-title">📝 Tell Me What's Going On</div>
+      <div className="page-sub">Sharing your situation helps the AI give you more personalized support.</div>
+
+      <div className="card" style={{ marginBottom: 16 }}>
+        <div className="card-title">What type of stress are you facing?</div>
+        <div className="card-sub">Select all that apply</div>
+        <div className="mcq-options">
+          {stressorTags.map(tag => (
+            <button key={tag} className={`mcq-opt ${selectedTags.includes(tag) ? 'selected' : ''}`} onClick={() => toggleTag(tag)}>{tag}</button>
+          ))}
+        </div>
+      </div>
+
+      <div className="card" style={{ marginBottom: 16 }}>
+        <div className="card-title">Describe your situation</div>
+        <div className="card-sub">What's happening in your life right now?</div>
+        <textarea className="textarea-styled" placeholder="E.g., I have a big presentation to the board tomorrow and I'm feeling overwhelmed..." value={situation} onChange={e => setSituation(e.target.value)} rows={3} />
+      </div>
+
+      <div className="card" style={{ marginBottom: 16 }}>
+        <div className="card-title">What's causing your stress?</div>
+        <div className="card-sub">Any specific trigger or reason?</div>
+        <textarea className="textarea-styled" placeholder="E.g., Too much work pressure, fear of not meeting expectations..." value={reason} onChange={e => setReason(e.target.value)} rows={2} />
+      </div>
+
+      <div className="card">
+        <div className="card-title">🪞 What thoughts make you doubt yourself?</div>
+        <div className="card-sub">These are thoughts our AI coach can help you challenge using CBT techniques.</div>
+        <textarea className="textarea-styled" placeholder='E.g., "What if they realize I don&apos;t know enough?" or "Everyone else seems to have it figured out..."' value={selfDoubt} onChange={e => setSelfDoubt(e.target.value)} rows={2} />
+      </div>
+
+      <div className="btn-row">
+        <button className="btn-ghost" onClick={() => onNext('', '', '')}>Skip for now</button>
+        <button className="btn-blue" onClick={() => {
+          const fullSituation = selectedTags.length ? `[${selectedTags.join(', ')}] ${situation}` : situation;
+          onNext(fullSituation, reason, selfDoubt);
+        }} disabled={!situation.trim() && !selectedTags.length}>Continue to Recommendations →</button>
+      </div>
+    </div>
+  );
+}
+
+// ─── FLOATING CHAT WIDGET ────────────────────────────────────────────────────
+function FloatingChat({ user, stressScore, situation, reason, selfDoubt, sessions, currentPage, autoOpen }) {
+  const [open, setOpen] = useState(false);
+
+  // Auto-open chat when score is revealed
+  const autoOpened = useRef(false);
+  useEffect(() => {
+    if (autoOpen && !autoOpened.current) {
+      autoOpened.current = true;
+      setTimeout(() => setOpen(true), 800); // slight delay for dramatic effect
+    }
+  }, [autoOpen]);
+  const [msgs, setMsgs] = useState([]);
+  const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [lang, setLang] = useState('en');
+  const [recording, setRecording] = useState(false);
+  const [hasNewMsg, setHasNewMsg] = useState(false);
+  const bottomRef = useRef(null);
+  const recRef = useRef(null);
+  const initialized = useRef(false);
+
+  // Build context object from all app state
+  const getContext = useCallback(() => ({
+    language: lang,
+    stressScore,
+    situation,
+    reason,
+    selfDoubt,
+    sessionSummary: getSessionSummary(sessions || []),
+    currentPage,
+    timeOfDay: getTimeOfDay(),
+  }), [lang, stressScore, situation, reason, selfDoubt, sessions, currentPage]);
+
+  // Generate context-aware greeting
+  useEffect(() => {
+    if (initialized.current) return;
+    initialized.current = true;
+
+    const time = getTimeOfDay();
+    const name = user?.name?.split(' ')[0] || '';
+    let greeting;
+
+    if (stressScore != null && stressScore >= 60) {
+      greeting = `Hey${name ? ' ' + name : ''}, I can see your stress is at ${stressScore}% — that's quite high. ${situation ? `Dealing with "${situation.slice(0, 50)}..." sounds tough.` : ''} I'm here whenever you want to talk it through. 💙`;
+    } else if (stressScore != null) {
+      greeting = `Hi${name ? ' ' + name : ''}! Your stress is at ${stressScore}% — not bad. ${situation ? `I see you mentioned "${situation.slice(0, 50)}..."` : 'How are things going?'} I'm here if you want to chat. 🌟`;
+    } else {
+      greeting = `Hey${name ? ' ' + name : ''}! I'm Zenith, your AI career wellness coach. I'm here whenever you need to talk about work stress, burnout, or anything on your mind. 💙`;
+    }
+
+    setMsgs([{ role: 'bot', text: greeting, time: now() }]);
+    if (!open) setHasNewMsg(true);
+  }, [stressScore, situation, user]);
+
+  // Update greeting when stress score changes (new quiz completed)
+  const prevScore = useRef(stressScore);
+  useEffect(() => {
+    if (prevScore.current === stressScore) return;
+    prevScore.current = stressScore;
+    if (stressScore == null || !initialized.current) return;
+
+    const scoreMsg = stressScore >= 70
+      ? `I just saw your stress jumped to ${stressScore}%. That's high — let's work on bringing it down. What's weighing on you most right now?`
+      : stressScore >= 40
+      ? `Your stress is at ${stressScore}% — moderate range. Want to talk about what's going on?`
+      : `${stressScore}% — you're doing well! Want to keep the momentum going?`;
+
+    setMsgs(p => [...p, { role: 'bot', text: scoreMsg, time: now() }]);
+    if (!open) setHasNewMsg(true);
+  }, [stressScore]);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [msgs, loading]);
+
+  const send = async (text = input) => {
+    if (!text.trim() || loading) return;
+    const userMsg = { role: 'user', text: text.trim(), time: now() };
+    setMsgs(p => [...p, userMsg]);
+    setInput('');
+    setLoading(true);
+
+    const history = [...msgs, userMsg];
+    const context = getContext();
+    const reply = await callChatAPI(history, context);
+    setMsgs(p => [...p, { role: 'bot', text: reply, time: now() }]);
+    setLoading(false);
+
+    // TTS
+    if ('speechSynthesis' in window) {
+      const utt = new SpeechSynthesisUtterance(reply);
+      utt.lang = lang === 'ne' ? 'ne-NP' : 'en-US';
+      utt.rate = 0.95; utt.pitch = 1.05;
+      window.speechSynthesis.speak(utt);
+    }
+  };
+
+  const toggleMic = () => {
+    if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+      alert('Speech recognition not supported in this browser.');
+      return;
+    }
+    if (recording) {
+      recRef.current?.stop();
+      setRecording(false);
+      return;
+    }
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const rec = new SR();
+    rec.lang = lang === 'ne' ? 'ne-NP' : 'en-US';
+    rec.onresult = e => setInput(e.results[0][0].transcript);
+    rec.onend = () => setRecording(false);
+    recRef.current = rec;
+    rec.start();
+    setRecording(true);
+  };
+
+  // Context chips shown in the chat header
+  const contextChips = [];
+  if (stressScore != null) {
+    const cls = stressScore >= 70 ? 'stress-high' : stressScore >= 40 ? 'stress-mid' : 'stress-low';
+    contextChips.push({ label: `Stress: ${stressScore}%`, cls });
+  }
+  if (situation) contextChips.push({ label: situation.slice(0, 25) + (situation.length > 25 ? '...' : ''), cls: '' });
+  if (currentPage) contextChips.push({ label: currentPage, cls: '' });
+
+  return (
+    <>
+      {/* FAB Button */}
+      <button className={`chat-fab ${open ? 'open' : ''}`} onClick={() => { setOpen(o => !o); setHasNewMsg(false); }} title="Chat with Zenith AI">
+        {open ? '✕' : '💬'}
+        {hasNewMsg && !open && <div className="chat-fab-badge" />}
+        {!open && <div className="chat-fab-pulse" />}
+      </button>
+
+      {/* Chat Window */}
+      {open && (
+        <div className="float-chat">
+          <div className="chat-header">
+            <div className="chat-avatar">⚡</div>
+            <div className="chat-header-info">
+              <h3>Zenith AI</h3>
+              <p className="chat-online"><span className="chat-online-dot" /> Career wellness coach</p>
+            </div>
+            <div className="chat-lang-switch">
+              {['en','ne'].map(l => (
+                <button key={l} className={`lang-btn ${lang === l ? 'active' : ''}`} onClick={() => setLang(l)}>
+                  {l === 'en' ? '🇺🇸 EN' : '🇳🇵 NE'}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {contextChips.length > 0 && (
+            <div className="chat-context-bar">
+              {contextChips.map((c, i) => (
+                <span key={i} className={`context-chip ${c.cls}`}>{c.label}</span>
+              ))}
+            </div>
+          )}
+
+          <div className="chat-messages">
+            {msgs.map((m, i) => (
+              <div key={i} className={`msg ${m.role}`}>
+                <div className="msg-bubble">{m.text}</div>
+                <div className="msg-time">{m.time}</div>
+              </div>
+            ))}
+            {loading && (
+              <div className="msg bot">
+                <div className="typing-indicator">
+                  <div className="typing-dot" /><div className="typing-dot" /><div className="typing-dot" />
+                </div>
+              </div>
+            )}
+            <div ref={bottomRef} />
+          </div>
+
+          <div className="chat-input-row">
+            <button className={`chat-mic ${recording ? 'recording' : ''}`} onClick={toggleMic} title="Voice input">
+              {recording ? '⏹' : '🎤'}
+            </button>
+            <input className="chat-input" placeholder={lang === 'ne' ? 'आफ्नो मन को कुरा लेख्नुहोस्...' : 'Talk to Zenith...'} value={input}
+              onChange={e => setInput(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && !e.shiftKey && send()} />
+            <button className="chat-send" onClick={() => send()} disabled={!input.trim() || loading}>➤</button>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+// ─── RECOMMENDATIONS ──────────────────────────────────────────────────────────
+function Recommendations({ score, onNext }) {
+  const cats = score >= 60 ? ['relax', 'music', 'meme'] : score >= 35 ? ['music', 'meme', 'relax'] : ['meme', 'music', 'relax'];
+  const tagLabels = { music:'Music', meme:'Humor', relax:'Relaxation' };
+
+  return (
+    <div>
+      <div className="page-title">🎯 Personalized Recommendations</div>
+      <div className="page-sub">Based on your stress level, here's what we suggest to help you unwind.</div>
+
+      {cats.map(cat => (
+        <div key={cat} style={{ marginBottom: 28 }}>
+          <div className="section-title">
+            {cat === 'music' ? '🎵 Calming Music' : cat === 'meme' ? '😂 Mood Boosters' : '🧘 Relaxation'}
+          </div>
+          <div className="rec-grid">
+            {RECS[cat].map((r, i) => (
+              <div key={i} className="rec-card">
+                <div className="rec-thumb">{r.emoji}</div>
+                <div className="rec-body">
+                  <div className={`rec-tag ${r.tag}`}>{tagLabels[r.tag]}</div>
+                  <div className="rec-title">{r.title}</div>
+                  <div className="rec-desc">{r.desc}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+
+      <div className="btn-row" style={{ justifyContent:'center' }}>
+        <button className="btn-blue" onClick={onNext}>📊 Take Post-Session Assessment →</button>
+      </div>
+    </div>
+  );
+}
+
+// ─── COMPARISON ───────────────────────────────────────────────────────────────
+function ComparisonView({ before, after, onDone }) {
+  const diff = before - after;
+  const improved = diff > 0;
+
+  return (
+    <div>
+      <div className="page-title">🎉 Session Complete!</div>
+      <div className="page-sub">Here's how your stress levels changed during this session.</div>
+
+      <div className="compare-wrap">
+        <div className="compare-card">
+          <div className="compare-label">Before Session</div>
+          <div className="compare-num before">{before}%</div>
+          <div className="score-bar-wrap"><div className="score-bar" style={{ width:`${before}%`, background:'#f97316' }} /></div>
+        </div>
+        <div className="compare-card" style={{ display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column' }}>
+          <div style={{ fontSize: 36, marginBottom: 8 }}>{improved ? '⬇️' : '➡️'}</div>
+          <div className={`compare-change ${improved ? 'good' : 'bad'}`}>
+            {improved ? `↓ ${diff}% Reduced` : diff === 0 ? '→ No Change' : `↑ ${Math.abs(diff)}% Increased`}
+          </div>
+        </div>
+        <div className="compare-card">
+          <div className="compare-label">After Session</div>
+          <div className="compare-num after">{after}%</div>
+          <div className="score-bar-wrap"><div className="score-bar" style={{ width:`${after}%`, background:'#22c55e' }} /></div>
+        </div>
+      </div>
+
+      <div className="card" style={{ textAlign:'center', padding: 32 }}>
+        <div style={{ fontSize: 48, marginBottom: 12 }}>{improved ? '🌟' : '💙'}</div>
+        <div style={{ fontFamily:'var(--font-display)', fontSize: 22, color:'var(--blue-deep)', marginBottom: 8 }}>
+          {improved ? 'Great progress today!' : 'Keep showing up for yourself!'}
+        </div>
+        <div style={{ fontSize: 14, color:'rgba(10,22,40,0.5)', lineHeight: 1.7 }}>
+          {improved
+            ? `You reduced your stress by ${diff} points this session. Keep practicing these techniques daily for best results.`
+            : 'Every session matters. Consistency is key to long-term mental wellness. You\'re doing great by being here.'}
+        </div>
+      </div>
+
+      <div className="btn-row" style={{ justifyContent:'center' }}>
+        <button className="btn-blue" onClick={onDone}>View Dashboard →</button>
+      </div>
+    </div>
+  );
+}
+
+// ─── DASHBOARD ────────────────────────────────────────────────────────────────
+function Dashboard({ sessions }) {
+  const chartRef = useRef(null);
+  const chartInstance = useRef(null);
+
+  const avgBefore = sessions.length ? Math.round(sessions.reduce((s, x) => s + x.before, 0) / sessions.length) : 0;
+  const avgAfter = sessions.length ? Math.round(sessions.reduce((s, x) => s + x.after, 0) / sessions.length) : 0;
+  const totalReduction = sessions.reduce((s, x) => s + Math.max(0, x.before - x.after), 0);
+
+  useEffect(() => {
+    if (!chartRef.current || !sessions.length) return;
+    if (chartInstance.current) chartInstance.current.destroy();
+    const ctx = chartRef.current.getContext('2d');
+    const labels = sessions.map((s, i) => `Session ${i + 1}`);
+    chartInstance.current = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [
+          { label: 'Before', data: sessions.map(s => s.before), borderColor: '#f97316', backgroundColor: 'rgba(249,115,22,0.08)', tension: 0.4, pointBackgroundColor: '#f97316', pointRadius: 5 },
+          { label: 'After', data: sessions.map(s => s.after), borderColor: '#22c55e', backgroundColor: 'rgba(34,197,94,0.08)', tension: 0.4, pointBackgroundColor: '#22c55e', pointRadius: 5 },
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom', labels: { font: { family: 'DM Sans', size: 13 }, usePointStyle: true } } },
+        scales: {
+          y: { min: 0, max: 100, grid: { color: 'rgba(168,200,255,0.15)' }, ticks: { font: { family: 'DM Mono', size: 11 } } },
+          x: { grid: { display: false }, ticks: { font: { family: 'DM Sans', size: 11 } } }
+        }
+      }
+    });
+  }, [sessions]);
+
+  if (!sessions.length) {
+    return (
+      <div className="page">
+        <div className="page-title">📊 Dashboard</div>
+        <div className="page-sub">Your wellness journey at a glance.</div>
+        <div className="loading-overlay">
+          <div style={{ fontSize: 64 }}>🌱</div>
+          <div style={{ fontFamily:'var(--font-display)', fontSize: 22, color:'var(--blue-deep)' }}>No sessions yet</div>
+          <div style={{ fontSize: 14, color:'rgba(10,22,40,0.45)' }}>Complete your first wellness session to see your progress here.</div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="page">
+      <div className="page-title">📊 Dashboard</div>
+      <div className="page-sub">Your mental wellness journey at a glance.</div>
+
+      <div className="stats-grid">
+        <div className="stat-card"><div className="stat-icon">🗂️</div><div className="stat-val">{sessions.length}</div><div className="stat-label">Total Sessions</div></div>
+        <div className="stat-card"><div className="stat-icon">📈</div><div className="stat-val" style={{color:'#f97316'}}>{avgBefore}%</div><div className="stat-label">Avg. Stress Before</div></div>
+        <div className="stat-card"><div className="stat-icon">📉</div><div className="stat-val" style={{color:'#22c55e'}}>{avgAfter}%</div><div className="stat-label">Avg. Stress After</div></div>
+        <div className="stat-card"><div className="stat-icon">⭐</div><div className="stat-val" style={{color:'var(--blue-primary)'}}>{totalReduction}</div><div className="stat-label">Total Points Reduced</div></div>
+      </div>
+
+      <div className="chart-card">
+        <div className="section-title">📈 Stress Reduction Over Time</div>
+        <div className="chart-wrap"><canvas ref={chartRef} /></div>
+      </div>
+
+      <div className="sessions-table" style={{ marginTop: 28 }}>
+        <div className="table-header">
+          <div>Date</div><div>Before</div><div>After</div><div>Improvement</div><div>Duration</div>
+        </div>
+        {[...sessions].reverse().map((s, i) => (
+          <div key={i} className="table-row">
+            <div>{fmtDate(s.date)}</div>
+            <div><span className={`badge-score ${s.before >= 70 ? 'high' : s.before >= 40 ? 'mid' : 'low'}`}>{s.before}%</span></div>
+            <div><span className={`badge-score ${s.after >= 70 ? 'high' : s.after >= 40 ? 'mid' : 'low'}`}>{s.after}%</span></div>
+            <div><span className="improve-badge">↓ {Math.max(0, s.before - s.after)}pts</span></div>
+            <div>~{s.duration}m</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── ABOUT PAGE ───────────────────────────────────────────────────────────────
+function AboutPage() {
+  const features = [
+    { icon:'🧠', title:'Context-Aware AI Coach', desc:'Zenith knows your stress score, situation, and triggers — giving you specific, actionable advice, not generic tips.' },
+    { icon:'💬', title:'Multilingual Support', desc:'Talk to Zenith in English or Nepali. Our AI understands your career context and responds with empathy.' },
+    { icon:'🪞', title:'CBT-Based Coaching', desc:'Challenge self-doubt and imposter syndrome with science-backed cognitive behavioral therapy techniques.' },
+    { icon:'📊', title:'Progress Tracking', desc:'Before/after stress scores per session with visual dashboards showing your recovery journey over time.' },
+    { icon:'🎙️', title:'Voice Support', desc:'Speak your mind with voice input and hear Zenith\'s responses — like talking to a real coach.' },
+    { icon:'🔒', title:'Private & Secure', desc:'Your career wellness data stays private. No sharing, no tracking, no judgment.' },
+  ];
+
+  return (
+    <div className="page">
+      <div className="about-hero">
+        <h1>About Zenith</h1>
+        <p>Zenith is an AI-powered career wellness platform designed to help working professionals manage burnout, navigate stress, and find balance through context-aware AI coaching and CBT-backed techniques.</p>
+      </div>
+      <div className="section-title">✨ Features</div>
+      <div className="features-grid">
+        {features.map((f, i) => (
+          <div key={i} className="feature-card">
+            <div className="feature-icon">{f.icon}</div>
+            <h3>{f.title}</h3>
+            <p>{f.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── PROFILE ─────────────────────────────────────────────────────────────────
+function ProfilePage({ user, sessions }) {
+  if (!user) return null;
+  const avgReduction = sessions.length ? Math.round(sessions.reduce((s, x) => s + Math.max(0, x.before - x.after), 0) / sessions.length) : 0;
+
+  return (
+    <div className="page">
+      <div className="page-title">👤 Profile</div>
+      <div className="page-sub">Your account details and wellness summary.</div>
+
+      <div className="profile-hero">
+        <div className="profile-avatar">{user.name[0].toUpperCase()}</div>
+        <div className="profile-info">
+          <h2>{user.name}</h2>
+          <p>{user.email}</p>
+          <div className="profile-badge">🌱 Wellness Member</div>
+        </div>
+      </div>
+
+      <div className="section-title">📋 Account Details</div>
+      <div className="detail-grid">
+        <div className="detail-item"><div className="detail-key">Full Name</div><div className="detail-val">{user.name}</div></div>
+        <div className="detail-item"><div className="detail-key">Email</div><div className="detail-val">{user.email}</div></div>
+        <div className="detail-item"><div className="detail-key">Member Since</div><div className="detail-val">{fmtDate(user.joinedAt)}</div></div>
+        <div className="detail-item"><div className="detail-key">Sessions Completed</div><div className="detail-val">{sessions.length}</div></div>
+        <div className="detail-item"><div className="detail-key">Avg. Stress Reduction</div><div className="detail-val" style={{color:'#22c55e'}}>↓ {avgReduction} pts/session</div></div>
+        <div className="detail-item"><div className="detail-key">Wellness Status</div><div className="detail-val">{sessions.length >= 5 ? '🌟 Consistent' : sessions.length >= 2 ? '🌱 Growing' : '🌟 Just Started'}</div></div>
+      </div>
+    </div>
+  );
+}
+
+// ─── SPARKLINE ────────────────────────────────────────────────────────────────
+function Sparkline({ sessions }) {
+  if (!sessions.length) return null;
+  const W = 280, H = 60, PAD = 8;
+  const vals = sessions.map(s => s.before);
+  const min = Math.min(...vals, 0), max = Math.max(...vals, 100);
+  const range = max - min || 1;
+  const pts = vals.map((v, i) => {
+    const x = PAD + (i / Math.max(vals.length - 1, 1)) * (W - PAD * 2);
+    const y = PAD + ((1 - (v - min) / range) * (H - PAD * 2));
+    return [x, y];
+  });
+  const pathD = pts.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p[0].toFixed(1)} ${p[1].toFixed(1)}`).join(' ');
+  const areaD = `${pathD} L ${pts[pts.length-1][0].toFixed(1)} ${H} L ${PAD} ${H} Z`;
+  const last = pts[pts.length - 1];
+  const lastVal = vals[vals.length - 1];
+  const lastColor = lastVal >= 70 ? '#ef4444' : lastVal >= 40 ? '#f97316' : '#22c55e';
+
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} style={{ width: '100%', height: 60, display: 'block' }}>
+      <defs>
+        <linearGradient id="spark-grad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="var(--blue-primary)" stopOpacity="0.18" />
+          <stop offset="100%" stopColor="var(--blue-primary)" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <path d={areaD} fill="url(#spark-grad)" />
+      <path d={pathD} fill="none" stroke="var(--blue-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      {pts.map(([x, y], i) => (
+        <circle key={i} cx={x} cy={y} r={i === pts.length - 1 ? 4 : 2.5}
+          fill={i === pts.length - 1 ? lastColor : 'white'}
+          stroke={i === pts.length - 1 ? lastColor : 'var(--blue-mist)'}
+          strokeWidth="1.5" />
+      ))}
+    </svg>
+  );
+}
+
+// ─── HOME SCREEN (returning user) ─────────────────────────────────────────────
+function HomeScreen({ user, sessions, onStartSession, onGoTo }) {
+  const firstName = user?.name?.split(' ')[0] || 'there';
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+
+  const last = sessions[sessions.length - 1];
+  const totalReduction = sessions.reduce((s, x) => s + Math.max(0, x.before - x.after), 0);
+  const avgAfter = Math.round(sessions.reduce((s, x) => s + x.after, 0) / sessions.length);
+  const trend = sessions.length >= 2
+    ? sessions[sessions.length - 1].after - sessions[sessions.length - 2].after
+    : null;
+
+  const quickActions = [
+    { icon: '🧘', label: 'Breathing', desc: '5-min calm', color: '#d1fae5', textColor: '#059669' },
+    { icon: '🎵', label: 'Music', desc: 'Ocean waves', color: '#ede9fe', textColor: '#7c3aed' },
+    { icon: '💬', label: 'Quick Chat', desc: 'Talk to Zenith', color: '#dbeafe', textColor: '#1d4ed8' },
+  ];
+
+  return (
+    <div style={{ animation: 'page-enter 0.35s ease' }}>
+      {/* Greeting header */}
+      <div style={{
+        background: 'linear-gradient(135deg, var(--blue-deep) 0%, var(--blue-mid) 100%)',
+        borderRadius: 'var(--radius-lg)', padding: '32px 32px 28px', marginBottom: 20,
+        display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16,
+        boxShadow: 'var(--shadow-md)',
+      }}>
+        <div>
+          <div style={{ fontSize: 13, color: 'rgba(168,200,255,0.75)', fontWeight: 500, marginBottom: 6, letterSpacing: '0.3px' }}>
+            {greeting} 👋
+          </div>
+          <div style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(22px, 4vw, 30px)', color: 'white', marginBottom: 10 }}>
+            {firstName}
+          </div>
+          <div style={{ fontSize: 13, color: 'rgba(168,200,255,0.7)' }}>
+            You've completed <strong style={{ color: 'white' }}>{sessions.length} session{sessions.length !== 1 ? 's' : ''}</strong>
+            {totalReduction > 0 && <> · reduced stress by <strong style={{ color: '#4ade80' }}>{totalReduction} pts</strong> total</>}
+          </div>
+        </div>
+        <button className="btn-primary" style={{ padding: '13px 28px', fontSize: 15, whiteSpace: 'nowrap', flexShrink: 0 }}
+          onClick={onStartSession}>
+          ＋ Start New Session
+        </button>
+      </div>
+
+      {/* Trend + sparkline */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
+        <div className="card" style={{ padding: '20px 22px' }}>
+          <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.7px', color: 'rgba(10,22,40,0.4)', marginBottom: 10 }}>
+            📊 Stress Trend
+          </div>
+          <Sparkline sessions={sessions} />
+          {last && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 10 }}>
+              <span style={{ fontSize: 12, color: 'rgba(10,22,40,0.5)' }}>Last session:</span>
+              <span style={{ fontSize: 13, fontWeight: 700, color: '#f97316' }}>{last.before}%</span>
+              <span style={{ fontSize: 12, color: 'rgba(10,22,40,0.35)' }}>→</span>
+              <span style={{ fontSize: 13, fontWeight: 700, color: '#22c55e' }}>{last.after}%</span>
+              {last.before > last.after && (
+                <span style={{ fontSize: 12, fontWeight: 600, color: '#22c55e' }}>↓{last.before - last.after}pts</span>
+              )}
+            </div>
+          )}
+        </div>
+
+        <div className="card" style={{ padding: '20px 22px', display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.7px', color: 'rgba(10,22,40,0.4)', marginBottom: 2 }}>
+            📈 Summary
+          </div>
+          <div style={{ display: 'flex', gap: 16 }}>
+            <div>
+              <div style={{ fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 700, color: '#22c55e' }}>{avgAfter}%</div>
+              <div style={{ fontSize: 11, color: 'rgba(10,22,40,0.45)', fontWeight: 500 }}>Avg. after</div>
+            </div>
+            <div style={{ width: 1, background: 'var(--blue-pale)' }} />
+            <div>
+              <div style={{ fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 700, color: 'var(--blue-primary)' }}>{sessions.length}</div>
+              <div style={{ fontSize: 11, color: 'rgba(10,22,40,0.45)', fontWeight: 500 }}>Sessions</div>
+            </div>
+          </div>
+          {trend !== null && (
+            <div style={{
+              display: 'inline-flex', alignItems: 'center', gap: 5, padding: '4px 12px',
+              borderRadius: 50, background: trend <= 0 ? '#d1fae5' : '#fee2e2',
+              color: trend <= 0 ? '#059669' : '#dc2626', fontSize: 12, fontWeight: 600, width: 'fit-content'
+            }}>
+              {trend <= 0 ? `↓ ${Math.abs(trend)}pts since last` : `↑ ${trend}pts since last`}
+            </div>
+          )}
+          <button style={{
+            marginTop: 'auto', padding: '8px 0', border: 'none', background: 'none',
+            color: 'var(--blue-primary)', fontSize: 13, fontWeight: 600, cursor: 'pointer',
+            textAlign: 'left', textDecoration: 'underline', textDecorationColor: 'transparent',
+            transition: 'text-decoration-color 0.2s',
+          }}
+            onMouseOver={e => e.target.style.textDecorationColor = 'var(--blue-primary)'}
+            onMouseOut={e => e.target.style.textDecorationColor = 'transparent'}
+            onClick={() => onGoTo('dashboard')}>
+            View full dashboard →
+          </button>
+        </div>
+      </div>
+
+      {/* Quick actions */}
+      <div style={{ marginBottom: 20 }}>
+        <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(10,22,40,0.5)', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: 12 }}>
+          🎯 Recommended For You
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
+          {quickActions.map((a, i) => (
+            <button key={i} style={{
+              background: a.color, border: 'none', borderRadius: 'var(--radius-sm)',
+              padding: '16px 14px', cursor: 'pointer', textAlign: 'left',
+              transition: 'transform 0.2s, box-shadow 0.2s',
+            }}
+              onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = 'var(--shadow-sm)'; }}
+              onMouseOut={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = ''; }}>
+              <div style={{ fontSize: 24, marginBottom: 6 }}>{a.icon}</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: a.textColor }}>{a.label}</div>
+              <div style={{ fontSize: 11, color: a.textColor, opacity: 0.75, marginTop: 2 }}>{a.desc}</div>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Recent sessions */}
+      <div>
+        <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(10,22,40,0.5)', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: 12 }}>
+          📋 Recent Sessions
+        </div>
+        <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+          {[...sessions].reverse().slice(0, 3).map((s, i) => (
+            <div key={i} style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              padding: '14px 20px', borderBottom: i < Math.min(sessions.length, 3) - 1 ? '1px solid rgba(168,200,255,0.15)' : 'none',
+              fontSize: 13,
+            }}>
+              <div style={{ color: 'rgba(10,22,40,0.5)', fontWeight: 500 }}>
+                {new Date(s.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ padding: '2px 10px', borderRadius: 50, background: s.before >= 70 ? '#fee2e2' : s.before >= 40 ? '#fef3c7' : '#d1fae5', color: s.before >= 70 ? '#dc2626' : s.before >= 40 ? '#d97706' : '#16a34a', fontSize: 12, fontWeight: 600 }}>
+                  {s.before}%
+                </span>
+                <span style={{ color: 'rgba(10,22,40,0.3)', fontSize: 12 }}>→</span>
+                <span style={{ padding: '2px 10px', borderRadius: 50, background: s.after >= 70 ? '#fee2e2' : s.after >= 40 ? '#fef3c7' : '#d1fae5', color: s.after >= 70 ? '#dc2626' : s.after >= 40 ? '#d97706' : '#16a34a', fontSize: 12, fontWeight: 600 }}>
+                  {s.after}%
+                </span>
+              </div>
+              <div style={{ fontWeight: 600, color: s.before > s.after ? '#22c55e' : 'rgba(10,22,40,0.4)', fontSize: 12 }}>
+                {s.before > s.after ? `↓ ${s.before - s.after}pts` : '→ no change'}
+              </div>
+            </div>
+          ))}
+          {sessions.length > 3 && (
+            <div style={{ padding: '10px 20px', textAlign: 'center' }}>
+              <button style={{ border: 'none', background: 'none', color: 'var(--blue-primary)', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}
+                onClick={() => onGoTo('dashboard')}>
+                View all {sessions.length} sessions →
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── TOAST ────────────────────────────────────────────────────────────────────
+function Toast({ msg }) {
+  return <div className="toast">{msg}</div>;
+}
+
+// ─── MAIN APP ─────────────────────────────────────────────────────────────────
+function App() {
+  const [view, setView] = useState('landing'); // landing | app
+  const [authMode, setAuthMode] = useState(null); // null | login | signup
+  const [user, setUser] = useState(null);
+  const [page, setPage] = useState('home');
+  const [step, setStep] = useState(0); // 0=quiz 1=score 2=scenario 3=recs 4=postQuiz 5=postScore 6=compare
+  const [beforeScore, setBeforeScore] = useState(null);
+  const [afterScore, setAfterScore] = useState(null);
+  const [situation, setSituation] = useState('');
+  const [reason, setReason] = useState('');
+  const [selfDoubt, setSelfDoubt] = useState('');
+  const [sessions, setSessions] = useState([]);
+  const [toast, setToast] = useState(null);
+  const [authForm, setAuthForm] = useState({ name:'', email:'', password:'', error:'' });
+  const sessionStart = useRef(Date.now());
+
+  const showToast = (msg) => {
+    setToast(msg);
+    setTimeout(() => setToast(null), 3200);
+  };
+
+  // AUTH
+  const handleAuth = (mode) => {
+    const { name, email, password } = authForm;
+    if (!email || !password) { setAuthForm(p => ({ ...p, error: 'Please fill all fields.' })); return; }
+    if (!/\S+@\S+\.\S+/.test(email)) { setAuthForm(p => ({ ...p, error: 'Invalid email address.' })); return; }
+    if (password.length < 6) { setAuthForm(p => ({ ...p, error: 'Password must be at least 6 characters.' })); return; }
+    if (mode === 'signup' && !name) { setAuthForm(p => ({ ...p, error: 'Please enter your name.' })); return; }
+
+    const u = { name: name || email.split('@')[0], email, joinedAt: Date.now() };
+    // Store a local token stub so session POSTs can include auth header
+    localStorage.setItem('zenith_token', btoa(JSON.stringify({ sub: email, ts: Date.now() })));
+    setUser(u); setAuthMode(null); setView('app');
+    showToast(`Welcome${mode === 'signup' ? '' : ' back'}, ${u.name}! 👋`);
+  };
+
+  const handleQuizComplete = (score, answers) => {
+    setBeforeScore(score); setStep(1);
+  };
+  const handleScenarioSubmit = (sit, reas, doubt) => {
+    setSituation(sit); setReason(reas); setSelfDoubt(doubt || ''); setStep(3);
+  };
+  const handleStartPostQuiz = () => setStep(4);
+  const handlePostQuizComplete = (score) => {
+    setAfterScore(score); setStep(5);
+  };
+  const handleShowComparison = () => setStep(6);
+  const handleSessionDone = async () => {
+    const duration = Math.round((Date.now() - sessionStart.current) / 60000);
+    const sessionData = { date: Date.now(), before: beforeScore, after: afterScore, duration: Math.max(5, duration) };
+    setSessions(p => [...p, sessionData]);
+    // Persist to backend
+    try {
+      const token = localStorage.getItem('zenith_token');
+      if (token) {
+        await fetch(`${API_BASE}/sessions`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({
+            before_score: beforeScore,
+            after_score: afterScore,
+            situation: situation || '',
+            reason: reason || '',
+            duration_minutes: Math.max(5, duration),
+          }),
+        });
+      }
+    } catch (e) { console.warn('Session sync failed (offline?):', e); }
+    setPage('dashboard'); setStep(0);
+    showToast('Session saved! Great work today. 🌟');
+  };
+
+  const startNewSession = () => {
+    setBeforeScore(null); setAfterScore(null);
+    setSituation(''); setReason(''); setSelfDoubt(''); setStep(0);
+    sessionStart.current = Date.now();
+    setPage('home');
+  };
+
+  // ── LANDING ──────────────────────────────────────────────────────────────
+  if (view === 'landing') {
+    return (
+      <div>
+        <div className="landing">
+          <BrainCanvas />
+          <div className="particles">
+            {Array.from({length:12}).map((_, i) => (
+              <div key={i} className="particle" style={{
+                left: `${Math.random()*100}%`, width: `${4+Math.random()*8}px`, height: `${4+Math.random()*8}px`,
+                animationDuration: `${8+Math.random()*12}s`, animationDelay: `${Math.random()*10}s`
+              }} />
+            ))}
+          </div>
+          <nav className="landing-nav">
+            <div className="nav-logo">Zen<span>ith</span></div>
+            <div className="nav-links">
+              <a onClick={() => {}}>Home</a>
+              <a onClick={() => { setView('app'); setPage('about'); setUser({ name:'Guest', email:'guest@serenity.app', joinedAt: Date.now() }); }}>About</a>
+              <a onClick={() => { setView('app'); setPage('about'); setUser({ name:'Guest', email:'guest@serenity.app', joinedAt: Date.now() }); }}>Features</a>
+            </div>
+            <div className="nav-btns">
+              <button className="btn-outline" onClick={() => setAuthMode('login')}>Login</button>
+              <button className="btn-primary" onClick={() => setAuthMode('signup')}>Sign Up</button>
+            </div>
+          </nav>
+          <div className="landing-hero">
+            <div className="hero-badge"><div className="hero-badge-dot" /><span>Your AI Career Coach is online</span></div>
+            <h1 className="hero-title">Turn Career Pressure Into<span className="accent">Clarity</span></h1>
+            <p className="hero-subtitle">Zenith helps high-performers manage burnout, navigate stress, and find balance through empathetic AI guidance and actionable micro-steps.</p>
+            <div className="hero-btns">
+              <button className="btn-primary btn-large" onClick={() => setAuthMode('signup')}>Start Your First Session</button>
+              <button className="btn-outline btn-large" onClick={() => { setView('app'); setPage('about'); setUser({ name:'Guest', email:'guest@serenity.app', joinedAt: Date.now() }); }}>Learn More</button>
+            </div>
+          </div>
+        </div>
+
+        {authMode && (
+          <div className="auth-overlay" onClick={e => e.target === e.currentTarget && setAuthMode(null)}>
+            <div className="auth-card">
+              <button className="auth-close" onClick={() => setAuthMode(null)}>✕</button>
+              <div className="auth-title">{authMode === 'login' ? 'Welcome back' : 'Create account'}</div>
+              <div className="auth-sub">{authMode === 'login' ? 'Sign in to your Serenity account' : 'Start your wellness journey today'}</div>
+
+              {authMode === 'signup' && (
+                <div className="form-group">
+                  <label className="form-label">Full Name</label>
+                  <input className="form-input" placeholder="Alex Johnson" value={authForm.name} onChange={e => setAuthForm(p => ({...p, name:e.target.value, error:''}))} />
+                </div>
+              )}
+              <div className="form-group">
+                <label className="form-label">Email Address</label>
+                <input className="form-input" type="email" placeholder="alex@example.com" value={authForm.email} onChange={e => setAuthForm(p => ({...p, email:e.target.value, error:''}))} />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Password</label>
+                <input className="form-input" type="password" placeholder="••••••••" value={authForm.password} onChange={e => setAuthForm(p => ({...p, password:e.target.value, error:''}))} onKeyDown={e => e.key==='Enter' && handleAuth(authMode)} />
+                {authForm.error && <div className="form-error">{authForm.error}</div>}
+              </div>
+              <button className="btn-blue" style={{ width:'100%' }} onClick={() => handleAuth(authMode)}>
+                {authMode === 'login' ? 'Sign In →' : 'Create Account →'}
+              </button>
+              <div className="auth-switch">
+                {authMode === 'login' ? <>Don't have an account? <a onClick={() => setAuthForm({name:'',email:'',password:'',error:''}) || setAuthMode('signup')}>Sign up</a></> : <>Already have an account? <a onClick={() => setAuthForm({name:'',email:'',password:'',error:''}) || setAuthMode('login')}>Login</a></>}
+              </div>
+            </div>
+          </div>
+        )}
+        {toast && <Toast msg={toast} />}
+      </div>
+    );
+  }
+
+  // ── APP SHELL ─────────────────────────────────────────────────────────────
+  const renderHome = () => {
+    if (step === 0 && sessions.length > 0) return (
+      <HomeScreen
+        user={user}
+        sessions={sessions}
+        onStartSession={startNewSession}
+        onGoTo={(p) => setPage(p)}
+      />
+    );
+    if (step === 0) return <StressQuiz onComplete={handleQuizComplete} />;
+    if (step === 1) return (
+      <div>
+        <div className="page-title">🎯 Your Stress Score</div>
+        <div className="page-sub">Based on your responses, here's your current stress level.</div>
+        <ScoreScreen score={beforeScore} onNext={() => setStep(2)} />
+      </div>
+    );
+    if (step === 2) return <ScenarioInput onNext={handleScenarioSubmit} />;
+    if (step === 3) return <Recommendations score={beforeScore} onNext={handleStartPostQuiz} />;
+    if (step === 4) return <StressQuiz onComplete={handlePostQuizComplete} isPost />;
+    if (step === 5) return (
+      <div>
+        <div className="page-title">📊 Post-Session Score</div>
+        <div className="page-sub">Let's see how you're feeling now.</div>
+        <ScoreScreen score={afterScore} onNext={handleShowComparison} label="See Your Progress" />
+      </div>
+    );
+    if (step === 6) return <ComparisonView before={beforeScore} after={afterScore} onDone={handleSessionDone} />;
+  };
+
+  return (
+    <div className="app-shell">
+      <nav className="app-nav">
+        <div className="app-logo" onClick={() => setPage('home')}>Zen<span>ith</span></div>
+        <div className="app-nav-links">
+          {[['home','🏠 Home'],['dashboard','📊 Dashboard'],['about','ℹ️ About']].map(([p,l]) => (
+            <button key={p} className={`nav-tab ${page===p?'active':''}`} onClick={() => { setPage(p); }}>{l}</button>
+          ))}
+        </div>
+        <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+          {step > 0 && page === 'home' && (
+            <button className="btn-ghost" style={{padding:'7px 16px', fontSize:13}} onClick={startNewSession}>↩ New Session</button>
+          )}
+          <div className="nav-profile" onClick={() => setPage('profile')} title="Profile">
+            {user?.name[0].toUpperCase()}
+          </div>
+        </div>
+      </nav>
+
+      {page === 'home' && (
+        <div className="page">
+          {!(step === 0 && sessions.length > 0) && (
+            <StepIndicator current={Math.min(step, 3)} />
+          )}
+          {renderHome()}
+        </div>
+      )}
+      {page === 'dashboard' && <Dashboard sessions={sessions} />}
+      {page === 'about' && <AboutPage />}
+      {page === 'profile' && <ProfilePage user={user} sessions={sessions} />}
+
+      {/* Floating AI Chat Widget — always available */}
+      <FloatingChat
+        user={user}
+        stressScore={beforeScore}
+        situation={situation}
+        reason={reason}
+        selfDoubt={selfDoubt}
+        sessions={sessions}
+        currentPage={page}
+        autoOpen={step === 1 && beforeScore != null}
+      />
+
+      {toast && <Toast msg={toast} />}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
 </html>
